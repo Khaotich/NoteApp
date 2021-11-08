@@ -18,9 +18,20 @@ public:
     NoteApp(QWidget *parent = nullptr);
     ~NoteApp();
 
+    void openFile(const QString &path);
+
+private slots:
+    void onFileNew();
+    void onFileOpen();
+    void onFileSave();
+    void onFileSaveAs();
+    void onExit();
+
 private:
     Ui::NoteApp *ui;
 
     Document m_content;
+    QString m_filePath;
+    bool isModified() const;
 };
 #endif // NOTEAPP_H
