@@ -12,13 +12,12 @@
 NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
 {
     ui->setupUi(this);
-
     ui->editor->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
     ui->preview->setContextMenuPolicy(Qt::NoContextMenu);
 
     PreviewPage *page = new PreviewPage(this);
     ui->preview->setPage(page);
-    ui->preview->resize(280, 1);
+    ui->preview->resize(260, 1);
 
     connect(ui->editor, &QPlainTextEdit::textChanged, [this]() { m_content.setText(ui->editor->toPlainText()); });
 
@@ -35,6 +34,7 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     connect(ui->actionExit, &QAction::triggered, this, &NoteApp::onExit);
     connect(ui->editor->document(), &QTextDocument::modificationChanged,
             ui->actionSave, &QAction::setEnabled);
+
 }
 
 NoteApp::~NoteApp()
@@ -122,6 +122,5 @@ void NoteApp::onExit()
         QMessageBox::StandardButton button = QMessageBox::question(this, windowTitle(), tr("You have unsaved changes. Do you want to exit anyway?"));
         if(button != QMessageBox::Yes) return;
     }
-
     close();
 }
