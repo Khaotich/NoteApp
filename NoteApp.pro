@@ -21,3 +21,5 @@ FORMS += \
 
 RESOURCES = \
     resources/package.qrc
+
+RESOURCES += qdarkstyle/dark/style.qrc

@@ -19,6 +19,11 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     ui->preview->setPage(page);
     ui->preview->resize(260, 1);
 
+    //ustawiam czcionkę dla edytora
+    QFont font = ui->editor->font();
+    font.setPointSize(12);
+    ui->editor->setFont(font);
+
     connect(ui->editor, &QPlainTextEdit::textChanged, [this]() { m_content.setText(ui->editor->toPlainText()); });
 
     QWebChannel *channel = new QWebChannel(this);
@@ -34,6 +39,18 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     connect(ui->actionExit, &QAction::triggered, this, &NoteApp::onExit);
     connect(ui->editor->document(), &QTextDocument::modificationChanged,
             ui->actionSave, &QAction::setEnabled);
+
+    QFile f(":qdarkstyle/dark/style.qss");
+    if(!f.exists())
+    {
+        printf("Unable to set stylesheet, file not found\n");
+    }
+    else
+    {
+        f.open(QFile::ReadOnly | QFile::Text);
+        QTextStream ts(&f);
+        qApp->setStyleSheet(ts.readAll());
+    }
 
 }
 
