@@ -15,6 +15,7 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     ui->editor->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
     ui->preview->setContextMenuPolicy(Qt::NoContextMenu);
 
+    //iniciuje i zmieniam wygląd widoku preview
     PreviewPage *page = new PreviewPage(this);
     ui->preview->setPage(page);
     ui->preview->resize(260, 1);
@@ -24,14 +25,13 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     font.setPointSize(12);
     ui->editor->setFont(font);
 
-    connect(ui->editor, &QPlainTextEdit::textChanged, [this]() { m_content.setText(ui->editor->toPlainText()); });
-
+    //podłączam edytor do widoku preview
     QWebChannel *channel = new QWebChannel(this);
     channel->registerObject(QStringLiteral("content"), &m_content);
     page->setWebChannel(channel);
-
     ui->preview->setUrl(QUrl("qrc:/index.html"));
 
+    //podłączam akcje do slotów dla plików markdown
     connect(ui->actionNew, &QAction::triggered, this, &NoteApp::onFileNew);
     connect(ui->actionOpen, &QAction::triggered, this, &NoteApp::onFileOpen);
     connect(ui->actionSave, &QAction::triggered, this, &NoteApp::onFileSave);
@@ -39,7 +39,10 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     connect(ui->actionExit, &QAction::triggered, this, &NoteApp::onExit);
     connect(ui->editor->document(), &QTextDocument::modificationChanged,
             ui->actionSave, &QAction::setEnabled);
+    connect(ui->editor, &QPlainTextEdit::textChanged, [this]() { m_content.setText(ui->editor->toPlainText()); });
 
+
+    //wczytanie ciemnego motywu aplikacji
     QFile f(":qdarkstyle/dark/style.qss");
     if(!f.exists())
     {

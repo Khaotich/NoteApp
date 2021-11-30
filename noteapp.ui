@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1009</width>
-    <height>648</height>
+    <width>1016</width>
+    <height>654</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -417,10 +417,25 @@
                <x>0</x>
                <y>0</y>
                <width>143</width>
-               <height>509</height>
+               <height>515</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
+              <property name="spacing">
+               <number>7</number>
+              </property>
+              <property name="leftMargin">
+               <number>11</number>
+              </property>
+              <property name="topMargin">
+               <number>11</number>
+              </property>
+              <property name="rightMargin">
+               <number>11</number>
+              </property>
+              <property name="bottomMargin">
+               <number>11</number>
+              </property>
               <item>
                <widget class="QLabel" name="label_13">
                 <property name="text">
@@ -587,15 +602,25 @@
              </property>
              <item>
               <widget class="QLabel" name="tytul">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="text">
-                <string>Tytuł Notatki</string>
+                <string>Tytuł notatki:</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QLabel" name="data">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="text">
-                <string>Data edycji</string>
+                <string>Data edycji:</string>
                </property>
               </widget>
              </item>
@@ -730,7 +755,10 @@
            <height>450</height>
           </size>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -743,10 +771,7 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
+          <item>
            <widget class="QSplitter" name="splitter">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -764,6 +789,19 @@
          </layout>
         </widget>
        </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item alignment="Qt::AlignLeft|Qt::AlignBottom">
         <widget class="QWidget" name="tagi_notatki" native="true">
          <property name="maximumSize">
@@ -773,6 +811,21 @@
           </size>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="spacing">
+           <number>15</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>7</number>
+          </property>
+          <property name="bottomMargin">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QPushButton" name="pushButton_11">
             <property name="text">
@@ -807,7 +860,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1009</width>
+     <width>1016</width>
      <height>25</height>
     </rect>
    </property>
