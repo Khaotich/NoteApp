@@ -20,6 +20,9 @@ FORMS += \
     noteapp.ui
 
 RESOURCES = \
+    icons/icons.qrc \
     resources/package.qrc
 
 RESOURCES += qdarkstyle/dark/style.qrc
+
+RESOURCES += icons/icons.qrc
