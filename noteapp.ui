@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1367</width>
+    <width>1481</width>
     <height>671</height>
    </rect>
   </property>
@@ -31,7 +31,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QWidget" name="widget_notebooks" native="true">
+        <widget class="QWidget" name="widget_notebooks_tags" native="true">
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="spacing">
            <number>5</number>
@@ -173,7 +173,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="widget_tags" native="true">
+           <widget class="QWidget" name="tags" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <property name="leftMargin">
               <number>0</number>
@@ -365,7 +365,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QWidget" name="widget_notes" native="true">
+        <widget class="QWidget" name="notes" native="true">
          <property name="minimumSize">
           <size>
            <width>150</width>
@@ -1158,7 +1158,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1367</width>
+     <width>1481</width>
      <height>25</height>
     </rect>
    </property>
