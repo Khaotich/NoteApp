@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1223</width>
+    <width>1367</width>
     <height>671</height>
    </rect>
   </property>
@@ -22,7 +22,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
-     <widget class="QWidget" name="spis" native="true">
+     <widget class="QWidget" name="widget_inventory" native="true">
       <property name="maximumSize">
        <size>
         <width>400</width>
@@ -31,7 +31,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QWidget" name="tagi_notatniki" native="true">
+        <widget class="QWidget" name="widget_notebooks" native="true">
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="spacing">
            <number>5</number>
@@ -49,7 +49,13 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QWidget" name="notatniki" native="true">
+           <widget class="QWidget" name="notebooks" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>280</height>
+             </size>
+            </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <property name="spacing">
               <number>5</number>
@@ -66,34 +72,32 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item alignment="Qt::AlignVCenter">
-              <widget class="QLabel" name="label_35">
+             <item>
+              <widget class="QLabel" name="label_notebooks">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>15</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
                <property name="text">
-                <string>Notatniki</string>
-               </property>
-               <property name="textFormat">
-                <enum>Qt::PlainText</enum>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/notebook.png&quot;/&gt;NOTEBOOKS&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="button_add_notebook">
                <property name="text">
-                <string>+</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QScrollArea" name="scrollArea_3">
+              <widget class="QScrollArea" name="scroll_area_notebooks">
                <property name="minimumSize">
                 <size>
                  <width>152</width>
@@ -108,8 +112,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>153</width>
-                  <height>177</height>
+                  <width>180</width>
+                  <height>202</height>
                  </rect>
                 </property>
                 <property name="minimumSize">
@@ -169,7 +173,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="tagi" native="true">
+           <widget class="QWidget" name="widget_tags" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <property name="leftMargin">
               <number>0</number>
@@ -206,7 +210,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Tagi</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/tags.png&quot; width=&quot;28&quot;/&gt; TAGS&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -216,7 +220,11 @@
              <item>
               <widget class="QPushButton" name="pushButton_2">
                <property name="text">
-                <string>+</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
                </property>
               </widget>
              </item>
@@ -230,7 +238,7 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>153</width>
+                  <width>163</width>
                   <height>393</height>
                  </rect>
                 </property>
@@ -357,7 +365,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QWidget" name="notatki" native="true">
+        <widget class="QWidget" name="widget_notes" native="true">
          <property name="minimumSize">
           <size>
            <width>150</width>
@@ -381,7 +389,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_37">
+           <widget class="QLabel" name="label_notes">
             <property name="font">
              <font>
               <pointsize>16</pointsize>
@@ -389,7 +397,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Notatki</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img width=&quot;28&quot; src=&quot;:/notes.png&quot;/&gt; NOTES&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -397,14 +405,18 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="button_add_note">
             <property name="text">
-             <string>+</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="icons/icons.qrc">
+              <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea_2">
+           <widget class="QScrollArea" name="scroll_area_notes">
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
@@ -413,8 +425,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>165</width>
-               <height>525</height>
+               <width>143</width>
+               <height>527</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -541,7 +553,7 @@
      </spacer>
     </item>
     <item>
-     <widget class="QWidget" name="edytor" native="true">
+     <widget class="QWidget" name="widget_main_editor" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <property name="spacing">
         <number>5</number>
@@ -559,7 +571,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QWidget" name="przyciski_informacje" native="true">
+        <widget class="QWidget" name="buttons_informations" native="true">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -583,7 +595,7 @@
            <number>0</number>
           </property>
           <item alignment="Qt::AlignTop">
-           <widget class="QWidget" name="informacje" native="true">
+           <widget class="QWidget" name="informations" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
              <property name="spacing">
               <number>10</number>
@@ -598,7 +610,7 @@
               <number>5</number>
              </property>
              <item>
-              <widget class="QLabel" name="tytul">
+              <widget class="QLabel" name="title">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
@@ -610,7 +622,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="data">
+              <widget class="QLabel" name="date">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
@@ -637,8 +649,8 @@
             </property>
            </spacer>
           </item>
-          <item alignment="Qt::AlignTop">
-           <widget class="QWidget" name="przyciski" native="true">
+          <item>
+           <widget class="QWidget" name="buttons" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <property name="leftMargin">
               <number>0</number>
@@ -653,7 +665,14 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QPushButton" name="pushButton_8">
+              <widget class="Line" name="line_9">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_undo">
                <property name="text">
                 <string/>
                </property>
@@ -664,7 +683,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_7">
+              <widget class="QPushButton" name="button_redo">
                <property name="text">
                 <string/>
                </property>
@@ -675,7 +694,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_10">
+              <widget class="Line" name="line_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_emoji">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -692,7 +718,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_9">
+              <widget class="Line" name="line_4">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_text_bold">
                <property name="text">
                 <string/>
                </property>
@@ -703,7 +736,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_6">
+              <widget class="QPushButton" name="button_text_italic">
                <property name="text">
                 <string/>
                </property>
@@ -714,7 +747,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_5">
+              <widget class="QPushButton" name="button_text_underline">
                <property name="text">
                 <string/>
                </property>
@@ -725,7 +758,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_4">
+              <widget class="QPushButton" name="button_text_strike">
                <property name="text">
                 <string/>
                </property>
@@ -736,7 +769,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_16">
+              <widget class="QPushButton" name="button_mark">
                <property name="text">
                 <string/>
                </property>
@@ -747,7 +780,25 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_17">
+              <widget class="QPushButton" name="button_horizontal_line">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/horizontal_line.png</normaloff>:/horizontal_line.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_5">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_h1">
                <property name="text">
                 <string/>
                </property>
@@ -758,7 +809,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_18">
+              <widget class="QPushButton" name="button_h2">
                <property name="text">
                 <string/>
                </property>
@@ -769,7 +820,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_19">
+              <widget class="QPushButton" name="button_h3">
                <property name="text">
                 <string/>
                </property>
@@ -780,7 +831,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_12">
+              <widget class="Line" name="line_6">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_down_index">
                <property name="text">
                 <string/>
                </property>
@@ -791,7 +849,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_14">
+              <widget class="QPushButton" name="button_up_index">
                <property name="text">
                 <string/>
                </property>
@@ -802,7 +860,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_20">
+              <widget class="Line" name="line_7">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_list_budke">
                <property name="text">
                 <string/>
                </property>
@@ -813,7 +878,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_21">
+              <widget class="QPushButton" name="button_list_numeric">
                <property name="text">
                 <string/>
                </property>
@@ -824,7 +889,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_22">
+              <widget class="QPushButton" name="button_list_check">
                <property name="text">
                 <string/>
                </property>
@@ -835,7 +900,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_15">
+              <widget class="Line" name="line_8">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_code_line">
                <property name="text">
                 <string/>
                </property>
@@ -846,13 +918,89 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_13">
+              <widget class="QPushButton" name="button_code_block">
                <property name="text">
                 <string/>
                </property>
                <property name="icon">
                 <iconset resource="icons/icons.qrc">
                  <normaloff>:/code_block.png</normaloff>:/code_block.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_link">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/hyperlink.png</normaloff>:/hyperlink.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_photo">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/photo.png</normaloff>:/photo.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_date_timr">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/date_time.png</normaloff>:/date_time.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_date">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/date.png</normaloff>:/date.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_time">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/time.png</normaloff>:/time.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_10">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>
@@ -876,7 +1024,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QWidget" name="widget_2" native="true">
+        <widget class="QWidget" name="display_note" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -949,7 +1097,7 @@
         </spacer>
        </item>
        <item alignment="Qt::AlignLeft|Qt::AlignBottom">
-        <widget class="QWidget" name="tagi_notatki" native="true">
+        <widget class="QWidget" name="tags_from_note" native="true">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -973,9 +1121,13 @@
            <number>5</number>
           </property>
           <item>
-           <widget class="QPushButton" name="pushButton_11">
+           <widget class="QPushButton" name="add_tag_to_note">
             <property name="text">
-             <string>+</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="icons/icons.qrc">
+              <normaloff>:/tag.png</normaloff>:/tag.png</iconset>
             </property>
            </widget>
           </item>
@@ -1006,7 +1158,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1223</width>
+     <width>1367</width>
      <height>25</height>
     </rect>
    </property>

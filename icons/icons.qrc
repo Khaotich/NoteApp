@@ -12,18 +12,24 @@
         <file>superscript.png</file>
         <file>code_line.png</file>
         <file>code_block.png</file>
-        <file>hyperlink.png</file> <!-- -->
-        <file>photo.png</file> <!-- -->
+        <file>hyperlink.png</file> 
+        <file>photo.png</file>
         <file>bullets_list.png</file>
         <file>list.png</file>
         <file>check_list.png</file>
         <file>h1.png</file>
         <file>h2.png</file>
         <file>h3.png</file>
-        <file>horizontal_line.png</file> <!-- -->
+        <file>horizontal_line.png</file>
         <file>mark.png</file>
-        <file>date_time.png</file> <!-- -->
-        <file>date.png</file> <!-- -->
-        <file>time.png</file> <!-- -->
+        <file>date_time.png</file>
+        <file>date.png</file>
+        <file>time.png</file>
+		<!-- Ikony o dużym rozmiarze -->
+		<file>tags.png</file>
+		<file>tag.png</file>
+		<file>notes.png</file>
+		<file>notebook.png</file>
+		<file>plus.png</file>
     </qresource>
 </RCC>
