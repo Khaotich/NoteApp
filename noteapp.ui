@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1016</width>
-    <height>667</height>
+    <width>1223</width>
+    <height>671</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -71,7 +71,6 @@
                <property name="font">
                 <font>
                  <pointsize>16</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -109,8 +108,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>173</width>
-                  <height>184</height>
+                  <width>153</width>
+                  <height>177</height>
                  </rect>
                 </property>
                 <property name="minimumSize">
@@ -202,7 +201,6 @@
                <property name="font">
                 <font>
                  <pointsize>16</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                  <underline>false</underline>
                 </font>
@@ -232,8 +230,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>173</width>
-                  <height>278</height>
+                  <width>153</width>
+                  <height>393</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -387,7 +385,6 @@
             <property name="font">
              <font>
               <pointsize>16</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -416,8 +413,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>168</width>
-               <height>553</height>
+               <width>165</width>
+               <height>525</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -739,6 +736,50 @@
               </widget>
              </item>
              <item>
+              <widget class="QPushButton" name="pushButton_16">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/mark.png</normaloff>:/mark.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_17">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/h1.png</normaloff>:/h1.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_18">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/h2.png</normaloff>:/h2.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_19">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/h3.png</normaloff>:/h3.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="pushButton_12">
                <property name="text">
                 <string/>
@@ -757,6 +798,39 @@
                <property name="icon">
                 <iconset resource="icons/icons.qrc">
                  <normaloff>:/superscript.png</normaloff>:/superscript.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_20">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/list.png</normaloff>:/list.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_21">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/bullets_list.png</normaloff>:/bullets_list.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_22">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/check_list.png</normaloff>:/check_list.png</iconset>
                </property>
               </widget>
              </item>
@@ -932,8 +1006,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1016</width>
-     <height>20</height>
+     <width>1223</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
