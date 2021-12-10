@@ -27,6 +27,12 @@ private slots:
     void onFileSaveAs();
     void onExit();
 
+    void on_button_undo_clicked();
+
+    void on_button_redo_clicked();
+
+    void on_button_emoji_clicked();
+
 private:
     Ui::NoteApp *ui;
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1481</width>
-    <height>671</height>
+    <height>792</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -77,6 +77,7 @@
                <property name="font">
                 <font>
                  <pointsize>15</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -112,8 +113,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>180</width>
-                  <height>202</height>
+                  <width>173</width>
+                  <height>285</height>
                  </rect>
                 </property>
                 <property name="minimumSize">
@@ -205,6 +206,7 @@
                <property name="font">
                 <font>
                  <pointsize>16</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                  <underline>false</underline>
                 </font>
@@ -238,8 +240,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>163</width>
-                  <height>393</height>
+                  <width>173</width>
+                  <height>278</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -393,6 +395,7 @@
             <property name="font">
              <font>
               <pointsize>16</pointsize>
+              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -425,8 +428,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>143</width>
-               <height>527</height>
+               <width>168</width>
+               <height>668</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1159,7 +1162,7 @@
      <x>0</x>
      <y>0</y>
      <width>1481</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

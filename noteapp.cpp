@@ -9,6 +9,13 @@
 #include <QTextStream>
 #include <QWebChannel>
 
+#include <windows.h>
+
+
+//-------------------------------------------------------------------------------------------//
+//----------------------------Inizjalizacja aplikacji QT-------------------------------------//
+
+
 NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
 {
     ui->setupUi(this);
@@ -54,13 +61,17 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
         QTextStream ts(&f);
         qApp->setStyleSheet(ts.readAll());
     }
-
 }
 
 NoteApp::~NoteApp()
 {
     delete ui;
 }
+
+
+//-------------------------------------------------------------------------------------------//
+//---------------------------------Obsługa plików--------------------------------------------//
+
 
 void NoteApp::openFile(const QString &path)
 {
@@ -144,3 +155,29 @@ void NoteApp::onExit()
     }
     close();
 }
+
+
+//-------------------------------------------------------------------------------------------//
+//---------------------------------Obsługa edytora-------------------------------------------//
+
+
+//przycisk wstecz
+void NoteApp::on_button_undo_clicked()
+{
+    ui->editor->undo();
+    ui->editor->setFocus();
+}
+
+//przycisk w przód
+void NoteApp::on_button_redo_clicked()
+{
+    ui->editor->redo();
+    ui->editor->setFocus();
+}
+
+//przycisk emoji
+void NoteApp::on_button_emoji_clicked()
+{
+    return;
+}
+
