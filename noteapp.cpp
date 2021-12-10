@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QWebChannel>
+#include <QKeyEvent>
 
 #include <windows.h>
 
@@ -175,9 +176,211 @@ void NoteApp::on_button_redo_clicked()
     ui->editor->setFocus();
 }
 
-//przycisk emoji
+//przycisk emoji !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void NoteApp::on_button_emoji_clicked()
 {
     return;
+}
+
+// przycisk pogrubiony tekst
+void NoteApp::on_button_text_bold_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "****";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 3);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk pochylony teskt
+void NoteApp::on_button_text_italic_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "**";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 2);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk tekst podkreślony
+void NoteApp::on_button_text_underline_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "<ins></ins>";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 7);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk tekst przekreślony
+void NoteApp::on_button_text_strike_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "~~~~";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 3);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk tekst z markerem
+void NoteApp::on_button_mark_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "<mark></mark>";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 8);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk linia pozioma
+void NoteApp::on_button_horizontal_line_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "***\n";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk cytat
+void NoteApp::on_button_quote_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "> ";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk nagłówek 1
+void NoteApp::on_button_h1_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "# ";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk nagłówek 2
+void NoteApp::on_button_h2_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "## ";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk nagłówek 3
+void NoteApp::on_button_h3_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "### ";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk indeks dolny
+void NoteApp::on_button_down_index_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "<sub></sub>";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 7);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk indeks górny
+void NoteApp::on_button_up_index_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "<sup></sup>";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 7);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk lista punktowa
+void NoteApp::on_button_list_budke_clicked()
+{
+    QTextCursor cursor = ui->editor->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    cursor.select(QTextCursor::LineUnderCursor);
+    QString line = cursor.selectedText();
+
+    if(line[0]=='-' && line[1]==' ')
+    {
+        QString text = ui->editor->toPlainText();
+        text += "\n- ";
+        ui->editor->setPlainText(text);
+
+        QTextCursor tc = ui->editor->textCursor();
+        tc.setPosition(ui->editor->document()->characterCount() - 1);
+        ui->editor->setTextCursor(tc);
+
+        ui->editor->setFocus();
+    }
+    else
+    {
+        QString text = ui->editor->toPlainText();
+        text += "- ";
+        ui->editor->setPlainText(text);
+
+        QTextCursor tc = ui->editor->textCursor();
+        tc.setPosition(ui->editor->document()->characterCount() - 1);
+        ui->editor->setTextCursor(tc);
+
+        ui->editor->setFocus();
+    }
 }
 

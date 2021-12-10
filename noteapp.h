@@ -33,6 +33,32 @@ private slots:
 
     void on_button_emoji_clicked();
 
+    void on_button_text_bold_clicked();
+
+    void on_button_text_italic_clicked();
+
+    void on_button_text_underline_clicked();
+
+    void on_button_text_strike_clicked();
+
+    void on_button_mark_clicked();
+
+    void on_button_horizontal_line_clicked();
+
+    void on_button_h1_clicked();
+
+    void on_button_h2_clicked();
+
+    void on_button_h3_clicked();
+
+    void on_button_quote_clicked();
+
+    void on_button_down_index_clicked();
+
+    void on_button_up_index_clicked();
+
+    void on_button_list_budke_clicked();
+
 private:
     Ui::NoteApp *ui;
 

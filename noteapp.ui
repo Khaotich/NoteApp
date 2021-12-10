@@ -794,6 +794,17 @@
               </widget>
              </item>
              <item>
+              <widget class="QPushButton" name="button_quote">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="icons/icons.qrc">
+                 <normaloff>:/quote.png</normaloff>:/quote.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="Line" name="line_5">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
