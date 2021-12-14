@@ -9,6 +9,7 @@
 #include <QTextStream>
 #include <QWebChannel>
 #include <QKeyEvent>
+#include <QDateTime>
 
 #include <windows.h>
 
@@ -456,6 +457,57 @@ void NoteApp::on_button_code_block_clicked()
 
     QTextCursor tc = ui->editor->textCursor();
     tc.setPosition(ui->editor->document()->characterCount() - 5);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk z pełną datą
+void NoteApp::on_button_date_timr_clicked()
+{
+    QDateTime now = QDateTime::currentDateTime();
+    QString now_ = now.toString("dd.MM.yyyy hh:mm");
+
+    QString text = ui->editor->toPlainText();
+    text += " " + now_ + " ";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk z samą datą
+void NoteApp::on_button_date_clicked()
+{
+    QDateTime now = QDateTime::currentDateTime();
+    QString now_ = now.toString("dd.MM.yyyy");
+
+    QString text = ui->editor->toPlainText();
+    text += " " + now_ + " ";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk z samą godziną
+void NoteApp::on_button_time_clicked()
+{
+    QDateTime now = QDateTime::currentDateTime();
+    QString now_ = now.toString("hh:mm:ss");
+
+    QString text = ui->editor->toPlainText();
+    text += " " + now_ + " ";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
     ui->editor->setTextCursor(tc);
 
     ui->editor->setFocus();
