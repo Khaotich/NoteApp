@@ -384,3 +384,80 @@ void NoteApp::on_button_list_budke_clicked()
     }
 }
 
+//przycisk lista wypunktowana
+void NoteApp::on_button_list_numeric_clicked()
+{
+    QTextCursor cursor = ui->editor->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    cursor.select(QTextCursor::LineUnderCursor);
+    QString line = cursor.selectedText();
+
+    if(line[0].isDigit())
+    {
+        qint32 num = line.split(".")[0].toInt();
+        QString text = ui->editor->toPlainText();
+        text += "\n" + QString::number(num + 1) + ". ";
+        ui->editor->setPlainText(text);
+
+        QTextCursor tc = ui->editor->textCursor();
+        tc.setPosition(ui->editor->document()->characterCount() - 1);
+        ui->editor->setTextCursor(tc);
+
+        ui->editor->setFocus();
+    }
+    else
+    {
+        QString text = ui->editor->toPlainText();
+        text += "\n1. ";
+        ui->editor->setPlainText(text);
+
+        QTextCursor tc = ui->editor->textCursor();
+        tc.setPosition(ui->editor->document()->characterCount() - 1);
+        ui->editor->setTextCursor(tc);
+
+        ui->editor->setFocus();
+    }
+}
+
+//przycisk lista checkboxów
+void NoteApp::on_button_list_check_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "\n - [ ] ";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk linia kodu
+void NoteApp::on_button_code_line_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "``";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 2);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
+//przycisk blok kodu
+void NoteApp::on_button_code_block_clicked()
+{
+    QString text = ui->editor->toPlainText();
+    text += "\n```\n\n```";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 5);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+

@@ -59,6 +59,14 @@ private slots:
 
     void on_button_list_budke_clicked();
 
+    void on_button_list_numeric_clicked();
+
+    void on_button_list_check_clicked();
+
+    void on_button_code_line_clicked();
+
+    void on_button_code_block_clicked();
+
 private:
     Ui::NoteApp *ui;
 
