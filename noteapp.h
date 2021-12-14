@@ -73,6 +73,8 @@ private slots:
 
     void on_button_time_clicked();
 
+    void on_button_photo_clicked();
+
 private:
     Ui::NoteApp *ui;
 

@@ -513,3 +513,37 @@ void NoteApp::on_button_time_clicked()
     ui->editor->setFocus();
 }
 
+//przycisk dodawanie zdjęcia
+void NoteApp::on_button_photo_clicked()
+{
+    QString selfilter = tr("All files (*.*)"
+                           ";;JPEG (*.jpg *.jpeg)"
+                           ";;PNG (*.png)");
+
+    QString path = QFileDialog::getOpenFileName(this,
+                                                tr("Insert photo"),
+                                                "",
+                                                tr("All files (*.*)"
+                                                   ";;JPEG (*.jpg *.jpeg)"
+                                                   ";;PNG (*.png)"),
+                                                &selfilter);
+    if(path.isEmpty()) return;
+
+    QFileInfo fi(path);
+    QString fileName= fi.fileName();
+    QString prefix = "qrc:photos";
+    QString destinationPath=  prefix + QDir::separator() + fileName;
+
+    if(QFile::copy(path, destinationPath)) qDebug() << "succ";
+
+    QString text = ui->editor->toPlainText();
+    text += "![alt text](photos/" + fileName + " 'Title')";
+    ui->editor->setPlainText(text);
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+
+    ui->editor->setFocus();
+}
+
