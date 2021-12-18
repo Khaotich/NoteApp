@@ -5,6 +5,8 @@ QT += widgets
 CONFIG += c++17
 CONFIG -= qtquickcompiler
 
+LIBS += -luser32
+
 SOURCES += \
     document.cpp \
     main.cpp \
@@ -24,7 +26,4 @@ RESOURCES = \
     resources/package.qrc
 
 RESOURCES += qdarkstyle/dark/style.qrc
-
 RESOURCES += icons/icons.qrc
-
-LIBS += -luser32
