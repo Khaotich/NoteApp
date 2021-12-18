@@ -11,8 +11,7 @@
 #include <QKeyEvent>
 #include <QDateTime>
 
-#include <windows.h>
-
+#include<Windows.h>
 
 //-------------------------------------------------------------------------------------------//
 //----------------------------Inizjalizacja aplikacji QT-------------------------------------//
@@ -177,13 +176,17 @@ void NoteApp::on_button_redo_clicked()
     ui->editor->setFocus();
 }
 
-//przycisk emoji !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//przycisk emoji (wykorzystuje windows_api)
 void NoteApp::on_button_emoji_clicked()
 {
-    return;
+    keybd_event(VK_LWIN, 0, 0, 0);
+    keybd_event(VK_OEM_PERIOD, 0, 0, 0);
+    keybd_event(VK_OEM_PERIOD, 0, KEYEVENTF_KEYUP, 0);
+    keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, 0);
+    ui->editor->setFocus();
 }
 
-// przycisk pogrubiony tekst
+//przycisk pogrubiony tekst
 void NoteApp::on_button_text_bold_clicked()
 {
     QString text = ui->editor->toPlainText();

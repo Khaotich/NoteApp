@@ -26,3 +26,5 @@ RESOURCES = \
 RESOURCES += qdarkstyle/dark/style.qrc
 
 RESOURCES += icons/icons.qrc
+
+LIBS += -luser32
