@@ -11,7 +11,7 @@
 #include <QKeyEvent>
 #include <QDateTime>
 
-#include<Windows.h>
+#include <Windows.h>
 
 //-------------------------------------------------------------------------------------------//
 //----------------------------Inizjalizacja aplikacji QT-------------------------------------//
