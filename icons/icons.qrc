@@ -1,6 +1,10 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
     <qresource>
+        <!-- Ikony Aplikacji -->
+        <file>NoteApp.png</file>
+        <file>NoteApp.ico</file>
+        <!-- Ikony przycisków -->
         <file>bold.png</file>
 		<file>emojis.png</file>
         <file>undo.png</file>

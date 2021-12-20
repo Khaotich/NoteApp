@@ -10,11 +10,16 @@
 #include <QWebChannel>
 #include <QKeyEvent>
 #include <QDateTime>
+#include <QAction>
+#include <QCoreApplication>
+#include <QCloseEvent>
+#include <QMenu>
 
 #include <Windows.h>
 
+
 //-------------------------------------------------------------------------------------------//
-//----------------------------Inizjalizacja aplikacji QT-------------------------------------//
+//----------------------------Inicjalizacja aplikacji QT-------------------------------------//
 
 
 NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
@@ -49,7 +54,6 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
             ui->actionSave, &QAction::setEnabled);
     connect(ui->editor, &QPlainTextEdit::textChanged, [this]() { m_content.setText(ui->editor->toPlainText()); });
 
-
     //wczytanie ciemnego motywu aplikacji
     QFile f(":qdarkstyle/dark/style.qss");
     if(!f.exists())
@@ -62,6 +66,13 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
         QTextStream ts(&f);
         qApp->setStyleSheet(ts.readAll());
     }
+
+    //ustawienie ikony zasobnika aplikacji
+    createActions();
+    createTrayIcon();
+    connect(trayIcon, &QSystemTrayIcon::messageClicked, this, &NoteApp::messageClicked);
+    connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(showHide(QSystemTrayIcon::ActivationReason)));
+
 }
 
 NoteApp::~NoteApp()
@@ -73,7 +84,7 @@ NoteApp::~NoteApp()
 //-------------------------------------------------------------------------------------------//
 //---------------------------------Obsługa plików--------------------------------------------//
 
-
+//otwarcie pliku
 void NoteApp::openFile(const QString &path)
 {
     QFile f(path);
@@ -87,11 +98,13 @@ void NoteApp::openFile(const QString &path)
     ui->editor->setPlainText(f.readAll());
 }
 
+//sprawdzenie czy plik się zmienił
 bool NoteApp::isModified() const
 {
     return ui->editor->document()->isModified();
 }
 
+//nowy plik
 void NoteApp::onFileNew()
 {
     if(isModified())
@@ -105,6 +118,7 @@ void NoteApp::onFileNew()
     ui->editor->document()->setModified(false);
 }
 
+//otwarcie pliku
 void NoteApp::onFileOpen()
 {
     if(isModified())
@@ -119,6 +133,7 @@ void NoteApp::onFileOpen()
     openFile(path);
 }
 
+//zapisanie pliku
 void NoteApp::onFileSave()
 {
     if(m_filePath.isEmpty())
@@ -139,6 +154,7 @@ void NoteApp::onFileSave()
     ui->editor->document()->setModified(false);
 }
 
+//zapisanie pliku 'jako'
 void NoteApp::onFileSaveAs()
 {
     QString path = QFileDialog::getSaveFileName(this, tr("Save MarkDown File"), "", tr("MarkDown File (*.md *.markdown)"));
@@ -147,6 +163,7 @@ void NoteApp::onFileSaveAs()
     onFileSave();
 }
 
+//wyjście bez zapisywania zmian
 void NoteApp::onExit()
 {
     if(isModified())
@@ -550,3 +567,79 @@ void NoteApp::on_button_photo_clicked()
     ui->editor->setFocus();
 }
 
+
+//-------------------------------------------------------------------------------------------//
+//---------------------------------Obsługa zasobnika-----------------------------------------//
+
+
+//obsługa kliknięć ikony w zasobniku
+void NoteApp::showHide(QSystemTrayIcon::ActivationReason r)
+{
+    if(r == QSystemTrayIcon::Trigger)
+    {
+        if (!this->isVisible()) this->show();
+        else this->hide();
+    }
+}
+
+//nadpisujemy
+void NoteApp::closeEvent(QCloseEvent *event)
+{
+    if(trayIcon->isVisible())
+    {
+        hide();
+        showMessage();
+        event->ignore();
+    }
+}
+
+//pokazanie powiadomienia
+void NoteApp::showMessage()
+{
+    QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(0);
+    trayIcon->showMessage("NoteApp work in background",
+                          "NoteApp will be working in tray system, click icon or notification to show app",
+                          icon);
+}
+
+//obsługa kliknięcia powiadomienia
+void NoteApp::messageClicked()
+{
+    show();
+}
+
+//przypisujemy akcje do menu ikony zasobnika
+void NoteApp::createActions()
+{
+    minimizeAction = new QAction(tr("Mi&nimize"), this);
+    connect(minimizeAction, &QAction::triggered, this, &QWidget::hide);
+
+    maximizeAction = new QAction(tr("Ma&ximize"), this);
+    connect(maximizeAction, &QAction::triggered, this, &QWidget::showMaximized);
+
+    restoreAction = new QAction(tr("&Restore"), this);
+    connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
+
+    quitAction = new QAction(tr("&Quit"), this);
+    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+}
+
+//tworzymy menu ikony zasobnika
+void NoteApp::createTrayIcon()
+{
+    trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(minimizeAction);
+    trayIconMenu->addAction(maximizeAction);
+    trayIconMenu->addAction(restoreAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(quitAction);
+
+    QIcon icon = QIcon(":/NoteApp.png");
+    setWindowIcon(icon);
+
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setIcon(icon);
+    trayIcon->setToolTip("NoteApp");
+    trayIcon->setContextMenu(trayIconMenu);
+    trayIcon->show();
+}

@@ -27,3 +27,5 @@ RESOURCES = \
 
 RESOURCES += qdarkstyle/dark/style.qrc
 RESOURCES += icons/icons.qrc
+
+RC_ICONS = icons/NoteApp.ico
