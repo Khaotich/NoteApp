@@ -68,6 +68,8 @@ private slots:
     void messageClicked();
     void showHide(QSystemTrayIcon::ActivationReason r);
 
+    void on_button_link_clicked();
+
 private:
     void createActions();
     void createTrayIcon();

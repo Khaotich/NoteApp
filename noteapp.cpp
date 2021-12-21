@@ -1,8 +1,10 @@
 #include "noteapp.h"
 #include "ui_noteapp.h"
 #include "previewpage.h"
+#include "link_dialog.h"
 
 #include <QFile>
+#include <QDialog>
 #include <QFileDialog>
 #include <QFontDatabase>
 #include <QMessageBox>
@@ -567,6 +569,42 @@ void NoteApp::on_button_photo_clicked()
     ui->editor->setFocus();
 }
 
+//przycisk link
+void NoteApp::on_button_link_clicked()
+{
+    QString text_ = "";
+    QString title = "";
+    QString adress = "";
+
+    link_dialog dialog;
+    dialog.setModal(true);
+    dialog.setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        text_ = dialog.getText();
+        title = dialog.getTitle();
+        adress = dialog.getAdress();
+
+        if(adress.right(1) == "/") adress.remove(adress.length() - 1, 1);
+        if(adress.left(8) == "https://") adress.remove(0, 8);
+        if(adress.left(7) == "http://") adress.remove(0, 7);
+
+        QString content = "["+ text_ + "]"
+                        + "(http://" + adress
+                        + " \"" + title + "\")";
+
+        QString text = ui->editor->toPlainText();
+        text += content;
+        ui->editor->setPlainText(text);
+
+        QTextCursor tc = ui->editor->textCursor();
+        tc.setPosition(ui->editor->document()->characterCount() - 1);
+        ui->editor->setTextCursor(tc);
+
+        ui->editor->setFocus();
+    }
+}
 
 //-------------------------------------------------------------------------------------------//
 //---------------------------------Obsługa zasobnika-----------------------------------------//
@@ -624,7 +662,7 @@ void NoteApp::createActions()
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 }
 
-//tworzymy menu ikony zasobnika
+//tworzymy menu i ikonę zasobnika
 void NoteApp::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
@@ -635,9 +673,8 @@ void NoteApp::createTrayIcon()
     trayIconMenu->addAction(quitAction);
 
     QIcon icon = QIcon(":/NoteApp.png");
-    setWindowIcon(icon);
-
     trayIcon = new QSystemTrayIcon(this);
+
     trayIcon->setIcon(icon);
     trayIcon->setToolTip("NoteApp");
     trayIcon->setContextMenu(trayIconMenu);
