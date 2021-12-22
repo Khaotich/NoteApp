@@ -52,6 +52,7 @@ private slots:
     void on_button_date_clicked();
     void on_button_time_clicked();
     void on_button_photo_clicked();
+    void on_button_link_clicked();
 
 private:
     Ui::NoteApp *ui;
@@ -67,8 +68,6 @@ private slots:
     void showMessage();
     void messageClicked();
     void showHide(QSystemTrayIcon::ActivationReason r);
-
-    void on_button_link_clicked();
 
 private:
     void createActions();

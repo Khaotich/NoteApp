@@ -2,6 +2,7 @@
 #include "ui_noteapp.h"
 #include "previewpage.h"
 #include "link_dialog.h"
+#include "photo_dialog.h"
 
 #include <QFile>
 #include <QDialog>
@@ -538,35 +539,37 @@ void NoteApp::on_button_time_clicked()
 //przycisk dodawanie zdjęcia
 void NoteApp::on_button_photo_clicked()
 {
-    QString selfilter = tr("All files (*.*)"
-                           ";;JPEG (*.jpg *.jpeg)"
-                           ";;PNG (*.png)");
+    Photo_Dialog dialog;
+    dialog.setModal(true);
+    dialog.setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
-    QString path = QFileDialog::getOpenFileName(this,
-                                                tr("Insert photo"),
-                                                "",
-                                                tr("All files (*.*)"
-                                                   ";;JPEG (*.jpg *.jpeg)"
-                                                   ";;PNG (*.png)"),
-                                                &selfilter);
-    if(path.isEmpty()) return;
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        QString path = dialog.getPath();
+        QString title = dialog.getTitle();
+        QString alter = dialog.getAlter();
 
-    QFileInfo fi(path);
-    QString fileName= fi.fileName();
-    QString prefix = "qrc:photos";
-    QString destinationPath=  prefix + QDir::separator() + fileName;
+        QFileInfo fi(path);
+        QString fileName = fi.fileName();
+        QString prefix = "file:///debug/photos/";
+        QString destinationPathMarkDown =  prefix + fileName;
+        QString destinationPath = "debug/photos/" + fileName;
 
-    if(QFile::copy(path, destinationPath)) qDebug() << "succ";
+        if(QFile::exists(destinationPath)) QFile::remove(destinationPath);
+        if(QFile::copy(path, destinationPath))
+        {
+            QString text = ui->editor->toPlainText();
+            text += "![" + alter + "](" + destinationPathMarkDown + " '" + title + "')";
+            ui->editor->setPlainText(text);
 
-    QString text = ui->editor->toPlainText();
-    text += "![alt text](photos/" + fileName + " 'Title')";
-    ui->editor->setPlainText(text);
+            QTextCursor tc = ui->editor->textCursor();
+            tc.setPosition(ui->editor->document()->characterCount() - 1);
+            ui->editor->setTextCursor(tc);
 
-    QTextCursor tc = ui->editor->textCursor();
-    tc.setPosition(ui->editor->document()->characterCount() - 1);
-    ui->editor->setTextCursor(tc);
-
-    ui->editor->setFocus();
+            ui->editor->setFocus();
+        }
+        else return;
+    }
 }
 
 //przycisk link

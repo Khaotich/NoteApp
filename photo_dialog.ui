@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>link_dialog</class>
- <widget class="QDialog" name="link_dialog">
+ <class>Photo_Dialog</class>
+ <widget class="QDialog" name="Photo_Dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>442</width>
-    <height>244</height>
+    <width>505</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Insert Link</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="qdarkstyle/dark/style.qrc">
-    <normaloff>:/qss_icons/dark/rc/transparent_focus@2x.png</normaloff>:/qss_icons/dark/rc/transparent_focus@2x.png</iconset>
+   <string>Insert Photo</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="title">
      <property name="font">
       <font>
        <pointsize>24</pointsize>
@@ -28,7 +24,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Insert Link</string>
+      <string>Insert Photo</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -38,27 +34,6 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="text_label">
-        <property name="font">
-         <font>
-          <pointsize>15</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Text</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="text_line_edit"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="widget_2" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QLabel" name="title_label">
         <property name="font">
@@ -81,19 +56,47 @@
     <widget class="QWidget" name="widget_3" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QLabel" name="adress_link">
+       <widget class="QLabel" name="alter_label">
         <property name="font">
          <font>
           <pointsize>15</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>Adress</string>
+         <string>Alternative Text</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="adress_line_edit"/>
+       <widget class="QLineEdit" name="alter_line_edit"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget_2" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="path_label">
+        <property name="font">
+         <font>
+          <pointsize>15</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Path</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="path_line_edit"/>
+      </item>
+      <item>
+       <widget class="QToolButton" name="path_button">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -110,14 +113,12 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="qdarkstyle/dark/style.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>link_dialog</receiver>
+   <receiver>Photo_Dialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -133,7 +134,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>link_dialog</receiver>
+   <receiver>Photo_Dialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

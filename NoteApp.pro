@@ -10,17 +10,20 @@ SOURCES += \
     link_dialog.cpp \
     main.cpp \
     noteapp.cpp \
+    photo_dialog.cpp \
     previewpage.cpp
 
 HEADERS += \
     document.h \
     link_dialog.h \
     noteapp.h \
+    photo_dialog.h \
     previewpage.h
 
 FORMS += \
     link_dialog.ui \
-    noteapp.ui
+    noteapp.ui \
+    photo_dialog.ui
 
 RESOURCES = \
     icons/icons.qrc \
@@ -29,3 +32,5 @@ RESOURCES = \
 RESOURCES += qdarkstyle/dark/style.qrc
 
 RC_ICONS = icons/NoteApp.ico
+
+DISTFILES +=
