@@ -551,9 +551,9 @@ void NoteApp::on_button_photo_clicked()
 
         QFileInfo fi(path);
         QString fileName = fi.fileName();
-        QString prefix = "file:///debug/photos/";
+        QString prefix = "file:///photos/";
         QString destinationPathMarkDown =  prefix + fileName;
-        QString destinationPath = "debug/photos/" + fileName;
+        QString destinationPath = "photos/" + fileName;
 
         if(QFile::exists(destinationPath)) QFile::remove(destinationPath);
         if(QFile::copy(path, destinationPath))
