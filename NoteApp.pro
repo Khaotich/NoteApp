@@ -1,4 +1,4 @@
-QT += core gui webenginewidgets webchannel widgets
+QT += core gui webenginewidgets webchannel widgets sql
 
 CONFIG += c++17
 CONFIG -= qtquickcompiler
@@ -32,5 +32,3 @@ RESOURCES = \
 RESOURCES += qdarkstyle/dark/style.qrc
 
 RC_ICONS = icons/NoteApp.ico
-
-DISTFILES +=

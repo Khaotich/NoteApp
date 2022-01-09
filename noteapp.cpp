@@ -17,6 +17,8 @@
 #include <QCoreApplication>
 #include <QCloseEvent>
 #include <QMenu>
+#include <QtSql/QSqlDatabase>
+#include <QInputDialog>
 
 #include <Windows.h>
 
@@ -75,6 +77,7 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     createTrayIcon();
     connect(trayIcon, &QSystemTrayIcon::messageClicked, this, &NoteApp::messageClicked);
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(showHide(QSystemTrayIcon::ActivationReason)));
+
 
 }
 
@@ -684,3 +687,26 @@ void NoteApp::createTrayIcon()
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->show();
 }
+
+
+//-------------------------------------------------------------------------------------------//
+//--------------------------------Obsługa bazy danych----------------------------------------//
+
+
+//przycisk dodanie notatnika
+void NoteApp::on_button_add_notebook_clicked()
+{
+    bool ok;
+    QString notebook_name = QInputDialog::getText(0, "Input dialog",
+                                                  "Notenook Name:", QLineEdit::Normal,
+                                                   "", &ok);;
+
+    if(ok && !notebook_name.isEmpty())
+    {
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setDatabaseName("database.db");
+        if(db.open()) qDebug() << "work";
+        else qDebug() << "fail";
+    }
+}
+

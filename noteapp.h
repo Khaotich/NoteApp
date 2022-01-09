@@ -69,6 +69,8 @@ private slots:
     void messageClicked();
     void showHide(QSystemTrayIcon::ActivationReason r);
 
+    void on_button_add_notebook_clicked();
+
 private:
     void createActions();
     void createTrayIcon();
