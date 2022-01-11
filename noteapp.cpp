@@ -17,7 +17,7 @@
 #include <QCoreApplication>
 #include <QCloseEvent>
 #include <QMenu>
-#include <QtSql/QSqlDatabase>
+#include <QtSql>
 #include <QInputDialog>
 
 #include <Windows.h>
@@ -27,6 +27,7 @@
 //----------------------------Inicjalizacja aplikacji QT-------------------------------------//
 
 
+//konstruktor aplikacji
 NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
 {
     ui->setupUi(this);
@@ -79,16 +80,30 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(showHide(QSystemTrayIcon::ActivationReason)));
 
 
+    //inicjalizacja bazy danych i systemu notatek
+    database = QSqlDatabase::addDatabase("QSQLITE");
+    database.setDatabaseName("database.db");
+    database.open();
+
+    openNotebook = false;
+    openTag = false;    
+    load_notebooks();
+
+    nameOpenNote = "";
+    openNote = false;
 }
 
+//destruktor aplikacji
 NoteApp::~NoteApp()
 {
+    database.close();
     delete ui;
 }
 
 
 //-------------------------------------------------------------------------------------------//
 //---------------------------------Obsługa plików--------------------------------------------//
+
 
 //otwarcie pliku
 void NoteApp::openFile(const QString &path)
@@ -690,23 +705,127 @@ void NoteApp::createTrayIcon()
 
 
 //-------------------------------------------------------------------------------------------//
+//------------------------------Funkcje systemu notatek--------------------------------------//
+
+
+//otwarcie notatki
+void NoteApp::open_note(QString name_note)
+{
+    nameOpenNote = name_note;
+    openNote = true;
+    QFile f("notes/" + name_note + ".md");
+    f.open(QIODevice::ReadOnly);
+    ui->editor->setPlainText(f.readAll());
+    f.close();
+}
+
+//zapisanie notatki
+void NoteApp::save_note(QString name_note)
+{
+    QFile f("notes/" + name_note + ".md");
+    f.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    QString tmp = ui->editor->toPlainText();
+    f.write(tmp.toUtf8());
+    f.close();
+}
+
+//usunięcie notatki
+void NoteApp::remove_note(QString name_note)
+{
+    return;
+}
+
+//zapisuje plik przy każdej zmianie tekstu
+void NoteApp::on_editor_textChanged()
+{
+    if(openNote) save_note(nameOpenNote);
+}
+
+
+//-------------------------------------------------------------------------------------------//
 //--------------------------------Obsługa bazy danych----------------------------------------//
 
 
 //przycisk dodanie notatnika
 void NoteApp::on_button_add_notebook_clicked()
 {
-    bool ok;
-    QString notebook_name = QInputDialog::getText(0, "Input dialog",
-                                                  "Notenook Name:", QLineEdit::Normal,
-                                                   "", &ok);;
+    bool ok = false;
+    QString name = QInputDialog::getText(0, "Add notebook",
+                                         "Notenook Name:",
+                                         QLineEdit::Normal,
+                                         "", &ok);
 
-    if(ok && !notebook_name.isEmpty())
+    if(ok && !name.isEmpty() && database.isOpen())
     {
-        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-        db.setDatabaseName("database.db");
-        if(db.open()) qDebug() << "work";
-        else qDebug() << "fail";
+        QSqlQuery query;
+        query.prepare("INSERT INTO Notebooks (NotebookName) VALUES (:name)");
+        query.bindValue(":name", name);
+        if(query.exec()) load_notebooks();
     }
+    else return;
 }
 
+//wczytanie notatników
+void NoteApp::load_notebooks()
+{
+    if(database.isOpen())
+    {
+        QSqlQuery query("SELECT * FROM Notebooks");
+        int idName = query.record().indexOf("NotebookName");
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        QWidget *widget = new QWidget;
+        layout->setAlignment(Qt::AlignTop);
+        widget->setLayout(layout);
+        ui->scroll_area_notebooks->setWidget(widget);
+
+        while(query.next())
+        {
+           QString name = query.value(idName).toString();
+
+           QPushButton *button = new QPushButton();
+           button->setText(name);
+           //button->setStyleSheet("background-color: none;");
+           layout->addWidget(button);
+
+           //podłączam funkcję do przycisku notatnika
+           connect(button, &QPushButton::clicked, button,
+                   [=]{load_notes_from_nootebook(name);});
+        }
+    }
+    else return;
+}
+
+//ładowanie notatek z notesu
+void NoteApp::load_notes_from_nootebook(QString name)
+{
+    openNotebook = true;
+    openTag = false;
+
+    if(database.isOpen())
+    {
+        QSqlQuery query("SELECT Notes.NoteName FROM Notes, NotebooksNotes, Notebooks WHERE NotebooksNotes.IdNotebook=Notebooks.Id AND NotebooksNotes.IdNote=Notes.Id AND Notebooks.NotebookName='" + name+ "'");
+        int idName = query.record().indexOf("NoteName");
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        QWidget *widget = new QWidget;
+        layout->setAlignment(Qt::AlignTop);
+        widget->setLayout(layout);
+        ui->scroll_area_notes->setWidget(widget);
+
+        while(query.next())
+        {
+           QString name_ = query.value(idName).toString();//
+
+           QPushButton *button = new QPushButton();
+           button->setText(name_);
+           //button->setStyleSheet("background-color: none;");
+           layout->addWidget(button);
+
+           //podłączam funkcję do przycisku notatnika
+           connect(button, &QPushButton::clicked, button,
+                   [=]{open_note(name_);});
+        }
+    }
+    else return;
+}

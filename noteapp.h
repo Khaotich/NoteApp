@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QSystemTrayIcon>
+#include <QSqlDatabase>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class NoteApp;}
@@ -69,8 +70,6 @@ private slots:
     void messageClicked();
     void showHide(QSystemTrayIcon::ActivationReason r);
 
-    void on_button_add_notebook_clicked();
-
 private:
     void createActions();
     void createTrayIcon();
@@ -82,5 +81,31 @@ private:
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
+
+//obsługa bazy danych
+private:
+    QSqlDatabase database;
+    bool openNotebook;
+    bool openTag;
+    bool openNote;
+    QString nameOpenNotes;
+    QString nameOpenTag;
+    QString nameOpenNote;
+
+private slots:
+    void on_button_add_notebook_clicked(); //dodanie notebooka do bazy
+
+    void on_editor_textChanged();
+
+protected:
+    void open_note(QString name_note);
+    void save_note(QString name_note);
+    void remove_note(QString name_note);
+
+    void load_notebooks();
+    void load_tags();
+    void load_notes_from_nootebook(QString name);
+    void load_notes_from_tag(QString name_tag);
 };
+
 #endif // NOTEAPP_H
