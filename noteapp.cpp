@@ -88,6 +88,7 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     openNotebook = false;
     openTag = false;    
     load_notebooks();
+    load_tags();
 
     nameOpenNote = "";
     openNote = false;
@@ -642,7 +643,7 @@ void NoteApp::showHide(QSystemTrayIcon::ActivationReason r)
     }
 }
 
-//nadpisujemy
+//nadpisujemy zdarzenie zamkniecia aplikacji
 void NoteApp::closeEvent(QCloseEvent *event)
 {
     if(trayIcon->isVisible())
@@ -717,6 +718,11 @@ void NoteApp::open_note(QString name_note)
     f.open(QIODevice::ReadOnly);
     ui->editor->setPlainText(f.readAll());
     f.close();
+
+    QTextCursor tc = ui->editor->textCursor();
+    tc.setPosition(ui->editor->document()->characterCount() - 1);
+    ui->editor->setTextCursor(tc);
+    ui->editor->setFocus();
 }
 
 //zapisanie notatki
@@ -753,7 +759,9 @@ void NoteApp::on_button_add_notebook_clicked()
     QString name = QInputDialog::getText(0, "Add notebook",
                                          "Notenook Name:",
                                          QLineEdit::Normal,
-                                         "", &ok);
+                                         "", &ok,
+                                         Qt::CustomizeWindowHint
+                                         | Qt::WindowTitleHint);
 
     if(ok && !name.isEmpty() && database.isOpen())
     {
@@ -770,7 +778,7 @@ void NoteApp::load_notebooks()
 {
     if(database.isOpen())
     {
-        QSqlQuery query("SELECT * FROM Notebooks");
+        QSqlQuery query("SELECT NotebookName FROM Notebooks");
         int idName = query.record().indexOf("NotebookName");
 
         QVBoxLayout *layout = new QVBoxLayout;
@@ -785,7 +793,6 @@ void NoteApp::load_notebooks()
 
            QPushButton *button = new QPushButton();
            button->setText(name);
-           //button->setStyleSheet("background-color: none;");
            layout->addWidget(button);
 
            //podłączam funkcję do przycisku notatnika
@@ -815,11 +822,10 @@ void NoteApp::load_notes_from_nootebook(QString name)
 
         while(query.next())
         {
-           QString name_ = query.value(idName).toString();//
+           QString name_ = query.value(idName).toString();
 
            QPushButton *button = new QPushButton();
            button->setText(name_);
-           //button->setStyleSheet("background-color: none;");
            layout->addWidget(button);
 
            //podłączam funkcję do przycisku notatnika
@@ -829,3 +835,89 @@ void NoteApp::load_notes_from_nootebook(QString name)
     }
     else return;
 }
+
+//ładowanie tagów
+void NoteApp::load_tags()
+{
+    if(database.isOpen())
+    {
+        QSqlQuery query("SELECT TagName FROM Tags");
+        int idName = query.record().indexOf("TagName");
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        QWidget *widget = new QWidget;
+        layout->setAlignment(Qt::AlignTop);
+        widget->setLayout(layout);
+        ui->scroll_area_tags->setWidget(widget);
+
+        while(query.next())
+        {
+           QString name = query.value(idName).toString();
+
+           QPushButton *button = new QPushButton();
+           button->setText(name);
+           layout->addWidget(button);
+
+           //podłączam funkcję do przycisku notatnika
+           connect(button, &QPushButton::clicked, button,
+                   [=]{load_notes_from_tag(name);});
+        }
+    }
+    else return;
+}
+
+//ładowanie notatek z tagów
+void NoteApp::load_notes_from_tag(QString name_tag)
+{
+    openNotebook = false;
+    openTag = true;
+
+    if(database.isOpen())
+    {
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! zmiana zapytania i testoeanie
+        QSqlQuery query("SELECT Notes.NoteName FROM Notes, NotebooksNotes, Notebooks WHERE NotebooksNotes.IdNotebook=Notebooks.Id AND NotebooksNotes.IdNote=Notes.Id AND Notebooks.NotebookName='" + name_tag + "'");
+        int idName = query.record().indexOf("NoteName");
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        QWidget *widget = new QWidget;
+        layout->setAlignment(Qt::AlignTop);
+        widget->setLayout(layout);
+        ui->scroll_area_notes->setWidget(widget);
+
+        while(query.next())
+        {
+           QString name_ = query.value(idName).toString();
+
+           QPushButton *button = new QPushButton();
+           button->setText(name_);
+           layout->addWidget(button);
+
+           //podłączam funkcję do przycisku notatnika
+           connect(button, &QPushButton::clicked, button,
+                   [=]{open_note(name_);});
+        }
+    }
+    else return;
+}
+
+//przycisk dodawania tagów
+void NoteApp::on_button_add_tag_clicked()
+{
+    bool ok = false;
+    QString name = QInputDialog::getText(0, "Add tag",
+                                         "Tag Name:",
+                                         QLineEdit::Normal,
+                                         "", &ok,
+                                         Qt::CustomizeWindowHint
+                                         | Qt::WindowTitleHint);
+
+    if(ok && !name.isEmpty() && database.isOpen())
+    {
+        QSqlQuery query;
+        query.prepare("INSERT INTO Tags (TagName) VALUES (:name)");
+        query.bindValue(":name", name);
+        if(query.exec()) load_tags();
+    }
+    else return;
+}
+

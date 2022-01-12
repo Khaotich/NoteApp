@@ -97,6 +97,8 @@ private slots:
 
     void on_editor_textChanged();
 
+    void on_button_add_tag_clicked();
+
 protected:
     void open_note(QString name_note);
     void save_note(QString name_note);
