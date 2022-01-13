@@ -88,7 +88,7 @@ private:
     bool openNotebook;
     bool openTag;
     bool openNote;
-    QString nameOpenNotes;
+    QString nameOpenNotebook;
     QString nameOpenTag;
     QString nameOpenNote;
 
@@ -99,10 +99,13 @@ private slots:
 
     void on_button_add_tag_clicked();
 
+    void on_button_add_note_clicked();
+
 protected:
     void open_note(QString name_note);
     void save_note(QString name_note);
     void remove_note(QString name_note);
+    void create_note(QString name_note);
 
     void load_notebooks();
     void load_tags();

@@ -735,6 +735,15 @@ void NoteApp::save_note(QString name_note)
     f.close();
 }
 
+//tworzenie notatki
+void NoteApp::create_note(QString name_note)
+{
+    QFile f("notes/" + name_note + ".md");
+    f.open(QIODevice::WriteOnly);
+    f.close();
+    open_note(name_note);
+}
+
 //usunięcie notatki
 void NoteApp::remove_note(QString name_note)
 {
@@ -831,6 +840,7 @@ void NoteApp::load_notes_from_nootebook(QString name)
            //podłączam funkcję do przycisku notatnika
            connect(button, &QPushButton::clicked, button,
                    [=]{open_note(name_);});
+           nameOpenNotebook = name;
         }
     }
     else return;
@@ -874,8 +884,7 @@ void NoteApp::load_notes_from_tag(QString name_tag)
 
     if(database.isOpen())
     {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! zmiana zapytania i testoeanie
-        QSqlQuery query("SELECT Notes.NoteName FROM Notes, NotebooksNotes, Notebooks WHERE NotebooksNotes.IdNotebook=Notebooks.Id AND NotebooksNotes.IdNote=Notes.Id AND Notebooks.NotebookName='" + name_tag + "'");
+        QSqlQuery query("SELECT Notes.NoteName FROM Notes, Tags, TagsNotes WHERE TagsNotes.IdNote=Notes.Id AND TagsNotes.IdTag=Tags.Id AND Tags.TagName='" + name_tag + "'");
         int idName = query.record().indexOf("NoteName");
 
         QVBoxLayout *layout = new QVBoxLayout;
@@ -919,5 +928,43 @@ void NoteApp::on_button_add_tag_clicked()
         if(query.exec()) load_tags();
     }
     else return;
+}
+
+//przycisk dodania notatki
+void NoteApp::on_button_add_note_clicked()
+{
+    if(openNotebook)
+    {
+        bool ok = false;
+        QString name = QInputDialog::getText(0, "Add note",
+                                             "Note Name:",
+                                             QLineEdit::Normal,
+                                             "", &ok,
+                                             Qt::CustomizeWindowHint
+                                             | Qt::WindowTitleHint);
+
+        if(ok && !name.isEmpty() && database.isOpen())
+        {
+            QDateTime time_ = QDateTime::currentDateTime();
+            QString time = time_.toString("dd.MM.yyyy hh:mm");
+
+            QSqlQuery query_get_id_notebook, query_get_id_note, query_insert_note, query_insert_notebooksnotes;
+
+            query_insert_note.prepare("INSERT INTO Notes (NoteName, TimeEdit) VALUES (:name, :time)");
+            query_insert_note.bindValue(":name", name);
+            query_insert_note.bindValue(":time", time);
+
+            query_get_id_note.prepare("");
+            //zbidować wartości, wywołać drugie zapytanie w ifie z &&
+
+            if(query_insert_note.exec()) create_note(name);
+        }
+        else return;
+    }
+    else
+    {
+        QMessageBox messageBox;
+        messageBox.warning(0,"Error","Add note only in notebook mode!");
+    }
 }
 
