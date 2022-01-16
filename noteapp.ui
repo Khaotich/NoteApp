@@ -112,8 +112,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>180</width>
-                  <height>202</height>
+                  <width>173</width>
+                  <height>291</height>
                  </rect>
                 </property>
                 <property name="minimumSize">
@@ -195,8 +195,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>180</width>
-                  <height>332</height>
+                  <width>173</width>
+                  <height>267</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_7"/>
@@ -283,8 +283,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>143</width>
-               <height>648</height>
+               <width>168</width>
+               <height>665</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -881,32 +881,17 @@
          </property>
         </spacer>
        </item>
-       <item alignment="Qt::AlignLeft|Qt::AlignBottom">
-        <widget class="QWidget" name="tags_from_note" native="true">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>80</height>
-          </size>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <property name="spacing">
-           <number>15</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>7</number>
-          </property>
-          <property name="bottomMargin">
-           <number>5</number>
-          </property>
+       <item alignment="Qt::AlignLeft">
+        <widget class="QWidget" name="tags_note" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
            <widget class="QPushButton" name="add_tag_to_note">
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -917,16 +902,15 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_25">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
+           <widget class="QWidget" name="tags_from_note" native="true"/>
           </item>
           <item>
-           <widget class="QLabel" name="label_26">
-            <property name="text">
-             <string>TextLabel</string>
+           <widget class="QFrame" name="frame">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
             </property>
            </widget>
           </item>
@@ -944,7 +928,7 @@
      <x>0</x>
      <y>0</y>
      <width>1521</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

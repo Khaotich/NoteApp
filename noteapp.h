@@ -91,15 +91,16 @@ private:
     QString nameOpenNotebook;
     QString nameOpenTag;
     QString nameOpenNote;
+    qint8 idOpenNotebook;
+    qint8 idOpenTag;
+    qint8 idOpenNote;
 
 private slots:
-    void on_button_add_notebook_clicked(); //dodanie notebooka do bazy
-
-    void on_editor_textChanged();
-
+    void on_button_add_notebook_clicked();
     void on_button_add_tag_clicked();
-
     void on_button_add_note_clicked();
+    void on_editor_textChanged();
+    void on_add_tag_to_note_clicked();
 
 protected:
     void open_note(QString name_note);
@@ -111,6 +112,9 @@ protected:
     void load_tags();
     void load_notes_from_nootebook(QString name);
     void load_notes_from_tag(QString name_tag);
+    void load_tags_of_note(QString name_note);
+
+    void RemoveLayout (QWidget* widget);
 };
 
 #endif // NOTEAPP_H

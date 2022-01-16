@@ -85,13 +85,18 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     database.setDatabaseName("database.db");
     database.open();
 
-    openNotebook = false;
-    openTag = false;    
     load_notebooks();
     load_tags();
 
-    nameOpenNote = "";
+    openNotebook = false;
     openNote = false;
+    openTag = false;
+    nameOpenNotebook = "";
+    nameOpenNote = "";
+    nameOpenTag = "";
+    idOpenNotebook = 0;
+    idOpenTag = 0;
+    idOpenNote = 0;
 }
 
 //destruktor aplikacji
@@ -222,6 +227,7 @@ void NoteApp::on_button_emoji_clicked()
     keybd_event(VK_OEM_PERIOD, 0, 0, 0);
     keybd_event(VK_OEM_PERIOD, 0, KEYEVENTF_KEYUP, 0);
     keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, 0);
+
     ui->editor->setFocus();
 }
 
@@ -712,17 +718,29 @@ void NoteApp::createTrayIcon()
 //otwarcie notatki
 void NoteApp::open_note(QString name_note)
 {
-    nameOpenNote = name_note;
-    openNote = true;
-    QFile f("notes/" + name_note + ".md");
-    f.open(QIODevice::ReadOnly);
-    ui->editor->setPlainText(f.readAll());
-    f.close();
+    if(database.isOpen())
+    {
+        QSqlQuery query_id("SELECT Id FROM Notes WHERE NoteName='" + name_note + "'");
+        query_id.exec();
+        query_id.next();
+        idOpenNote = query_id.value(0).toInt();
 
-    QTextCursor tc = ui->editor->textCursor();
-    tc.setPosition(ui->editor->document()->characterCount() - 1);
-    ui->editor->setTextCursor(tc);
-    ui->editor->setFocus();
+        nameOpenNote = name_note;
+        openNote = true;
+
+        QFile f("notes/" + name_note + ".md");
+        f.open(QIODevice::ReadOnly);
+        ui->editor->setPlainText(f.readAll());
+        f.close();
+
+        load_tags_of_note(name_note);
+
+        QTextCursor tc = ui->editor->textCursor();
+        tc.setPosition(ui->editor->document()->characterCount() - 1);
+        ui->editor->setTextCursor(tc);
+        ui->editor->setFocus();
+    }
+    else return;
 }
 
 //zapisanie notatki
@@ -817,9 +835,17 @@ void NoteApp::load_notes_from_nootebook(QString name)
 {
     openNotebook = true;
     openTag = false;
+    nameOpenNotebook = name;
+    nameOpenTag = "";
+    idOpenTag = 0;
 
     if(database.isOpen())
     {
+        QSqlQuery query_id("SELECT Id FROM Notebooks WHERE NotebookName='" + name + "'");
+        query_id.exec();
+        query_id.next();
+        idOpenNotebook = query_id.value(0).toInt();
+
         QSqlQuery query("SELECT Notes.NoteName FROM Notes, NotebooksNotes, Notebooks WHERE NotebooksNotes.IdNotebook=Notebooks.Id AND NotebooksNotes.IdNote=Notes.Id AND Notebooks.NotebookName='" + name+ "'");
         int idName = query.record().indexOf("NoteName");
 
@@ -840,7 +866,6 @@ void NoteApp::load_notes_from_nootebook(QString name)
            //podłączam funkcję do przycisku notatnika
            connect(button, &QPushButton::clicked, button,
                    [=]{open_note(name_);});
-           nameOpenNotebook = name;
         }
     }
     else return;
@@ -881,9 +906,17 @@ void NoteApp::load_notes_from_tag(QString name_tag)
 {
     openNotebook = false;
     openTag = true;
+    nameOpenNotebook = "";
+    nameOpenTag = name_tag;
+    idOpenNotebook = 0;
 
     if(database.isOpen())
     {
+        QSqlQuery query_id("SELECT Id FROM Tags WHERE TagName='" + name_tag + "'");
+        query_id.exec();
+        query_id.next();
+        idOpenTag = query_id.value(0).toInt();
+
         QSqlQuery query("SELECT Notes.NoteName FROM Notes, Tags, TagsNotes WHERE TagsNotes.IdNote=Notes.Id AND TagsNotes.IdTag=Tags.Id AND Tags.TagName='" + name_tag + "'");
         int idName = query.record().indexOf("NoteName");
 
@@ -948,23 +981,66 @@ void NoteApp::on_button_add_note_clicked()
             QDateTime time_ = QDateTime::currentDateTime();
             QString time = time_.toString("dd.MM.yyyy hh:mm");
 
-            QSqlQuery query_get_id_notebook, query_get_id_note, query_insert_note, query_insert_notebooksnotes;
+            QSqlQuery query_get_id_note("SELECT Id FROM Notes");
+            query_get_id_note.exec();
+            query_get_id_note.last();
+            qint8 idNote = query_get_id_note.value(0).toInt() + 1;
+
+            QSqlQuery query_insert_note, query_insert_notebooksnotes;
 
             query_insert_note.prepare("INSERT INTO Notes (NoteName, TimeEdit) VALUES (:name, :time)");
             query_insert_note.bindValue(":name", name);
             query_insert_note.bindValue(":time", time);
 
-            query_get_id_note.prepare("");
-            //zbidować wartości, wywołać drugie zapytanie w ifie z &&
+            query_insert_notebooksnotes.prepare("INSERT INTO NotebooksNotes (IdNotebook, IdNote) VALUES (:idNotebook, :idNote)");
+            query_insert_notebooksnotes.bindValue(":idNotebook", idOpenNotebook);
+            query_insert_notebooksnotes.bindValue(":idNote", idNote);
 
-            if(query_insert_note.exec()) create_note(name);
+            if(query_insert_note.exec() && query_insert_notebooksnotes.exec()) create_note(name);
+            load_notes_from_nootebook(nameOpenNotebook);
         }
         else return;
     }
     else
     {
         QMessageBox messageBox;
-        messageBox.warning(0,"Error","Add note only in notebook mode!");
+        messageBox.warning(0,"Warning","Add note only in notebook mode!");
     }
+}
+
+//ładowanie tagów dla notatki
+void NoteApp::load_tags_of_note(QString name_note)
+{
+    if(database.isOpen())
+    {
+        QSqlQuery query("SELECT TagName FROM Tags WHERE Id NOT IN (SELECT IdTag FROM TagsNotes WHERE IdNote='" + name_note + "')");
+        int idName = query.record().indexOf("TagName");
+
+        QHBoxLayout *layout = new QHBoxLayout;
+        QWidget *widget = new QWidget;
+        layout->setAlignment(Qt::AlignLeft);
+        widget->setLayout(layout);
+        ui->tags_from_note->layout()->replaceWidget(widget);
+
+        while(query.next())
+        {
+           QString name_ = query.value(idName).toString();
+
+           QPushButton *button = new QPushButton();
+           button->setText(name_);
+           layout->addWidget(button);
+
+           //podłączam funkcję do przycisku notatnika
+//           connect(button, &QPushButton::clicked, button,
+//                   [=]{open_note(name_);});
+        }
+    }
+    else return;
+}
+
+//dodanie tagu do notatki
+void NoteApp::on_add_tag_to_note_clicked()
+{
+    return;
 }
 
