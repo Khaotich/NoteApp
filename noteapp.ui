@@ -884,6 +884,21 @@
        <item alignment="Qt::AlignLeft">
         <widget class="QWidget" name="tags_note" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QPushButton" name="add_tag_to_note">
             <property name="maximumSize">
@@ -903,16 +918,6 @@
           </item>
           <item>
            <widget class="QWidget" name="tags_from_note" native="true"/>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>

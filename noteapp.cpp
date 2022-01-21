@@ -769,11 +769,10 @@ void NoteApp::remove_note(QString name_note)
 }
 
 //zapisuje plik przy każdej zmianie tekstu
-void NoteApp::on_editor_textChanged()
+void NoteApp::on_editor_cursorPositionChanged()
 {
-    if(openNote) save_note(nameOpenNote);
+    if(openNote && ui->editor->hasFocus()) save_note(nameOpenNote);
 }
-
 
 //-------------------------------------------------------------------------------------------//
 //--------------------------------Obsługa bazy danych----------------------------------------//
@@ -821,10 +820,7 @@ void NoteApp::load_notebooks()
            QPushButton *button = new QPushButton();
            button->setText(name);
            layout->addWidget(button);
-
-           //podłączam funkcję do przycisku notatnika
-           connect(button, &QPushButton::clicked, button,
-                   [=]{load_notes_from_nootebook(name);});
+           connect(button, &QPushButton::clicked, button, [=]{load_notes_from_nootebook(name);});
         }
     }
     else return;
@@ -833,6 +829,15 @@ void NoteApp::load_notebooks()
 //ładowanie notatek z notesu
 void NoteApp::load_notes_from_nootebook(QString name)
 {
+    if(openNote)
+    {
+        save_note(nameOpenNote);
+        ui->editor->setPlainText("");
+        openNote = false;
+        nameOpenNote = "";
+        idOpenNote = 0;
+    }
+
     openNotebook = true;
     openTag = false;
     nameOpenNotebook = name;
@@ -862,10 +867,7 @@ void NoteApp::load_notes_from_nootebook(QString name)
            QPushButton *button = new QPushButton();
            button->setText(name_);
            layout->addWidget(button);
-
-           //podłączam funkcję do przycisku notatnika
-           connect(button, &QPushButton::clicked, button,
-                   [=]{open_note(name_);});
+           connect(button, &QPushButton::clicked, button, [=]{open_note(name_);});
         }
     }
     else return;
@@ -892,10 +894,7 @@ void NoteApp::load_tags()
            QPushButton *button = new QPushButton();
            button->setText(name);
            layout->addWidget(button);
-
-           //podłączam funkcję do przycisku notatnika
-           connect(button, &QPushButton::clicked, button,
-                   [=]{load_notes_from_tag(name);});
+           connect(button, &QPushButton::clicked, button, [=]{load_notes_from_tag(name);});
         }
     }
     else return;
@@ -904,6 +903,15 @@ void NoteApp::load_tags()
 //ładowanie notatek z tagów
 void NoteApp::load_notes_from_tag(QString name_tag)
 {
+    if(openNote)
+    {
+        save_note(nameOpenNote);
+        ui->editor->setPlainText("");
+        openNote = false;
+        nameOpenNote = "";
+        idOpenNote = 0;
+    }
+
     openNotebook = false;
     openTag = true;
     nameOpenNotebook = "";
@@ -933,10 +941,7 @@ void NoteApp::load_notes_from_tag(QString name_tag)
            QPushButton *button = new QPushButton();
            button->setText(name_);
            layout->addWidget(button);
-
-           //podłączam funkcję do przycisku notatnika
-           connect(button, &QPushButton::clicked, button,
-                   [=]{open_note(name_);});
+           connect(button, &QPushButton::clicked, button,[=]{open_note(name_);});
         }
     }
     else return;
@@ -1013,14 +1018,26 @@ void NoteApp::load_tags_of_note(QString name_note)
 {
     if(database.isOpen())
     {
-        QSqlQuery query("SELECT TagName FROM Tags WHERE Id NOT IN (SELECT IdTag FROM TagsNotes WHERE IdNote='" + name_note + "')");
+
+        QSqlQuery query("SELECT Tags.TagName FROM Tags, TagsNotes, Notes WHERE Notes.Id=TagsNotes.IdNote AND Tags.Id=TagsNotes.IdTag AND Notes.NoteName='" + name_note + "'");
         int idName = query.record().indexOf("TagName");
 
+        QWidget * tmp = ui->tags_from_note;
+        if(tmp->layout() != NULL)
+        {
+            QLayoutItem* item;
+            while((item = tmp->layout()->takeAt(0)) != NULL)
+            {
+                delete item->widget();
+                delete item;
+            }
+            delete tmp->layout();
+        }
+
         QHBoxLayout *layout = new QHBoxLayout;
-        QWidget *widget = new QWidget;
+        QWidget *widget = ui->tags_from_note;
         layout->setAlignment(Qt::AlignLeft);
         widget->setLayout(layout);
-        ui->tags_from_note->layout()->replaceWidget(widget);
 
         while(query.next())
         {
@@ -1041,6 +1058,38 @@ void NoteApp::load_tags_of_note(QString name_note)
 //dodanie tagu do notatki
 void NoteApp::on_add_tag_to_note_clicked()
 {
-    return;
-}
+    if(database.isOpen() && openNote)
+    {
+        bool ok;
+        QStringList items;
 
+        QSqlQuery query("SELECT TagName FROM Tags WHERE Id NOT IN (SELECT IdTag FROM TagsNotes WHERE IdNote='" + QString::number(idOpenNote) + "')");
+        int idName = query.record().indexOf("TagName");
+        while(query.next()) items << query.value(idName).toString();
+
+        QString name = QInputDialog::getItem(0, "Add tag to note",
+                                             "Tag Name:",
+                                             items,0, 0,
+                                             &ok,
+                                             Qt::CustomizeWindowHint
+                                             | Qt::WindowTitleHint);
+
+        if(ok && !name.isEmpty())
+        {
+            QSqlQuery query_("SELECT Id FROM Tags WHERE TagName='" + name + "'");
+            query_.exec();
+            query_.last();
+            QString idTag = query_.value(0).toString();
+
+            QString idNote = QString::number(idOpenNote);
+            QSqlQuery query_insert;
+            query_insert.prepare("INSERT INTO TagsNotes (IdTag, IdNote) VALUES (:idTag, :idNote)");
+            query_insert.bindValue(":idTag", idTag);
+            query_insert.bindValue(":idNote", idNote);
+
+            if(query_insert.exec()) load_tags_of_note(nameOpenNote);
+        }
+        else return;
+    }
+    else return;
+}

@@ -91,15 +91,15 @@ private:
     QString nameOpenNotebook;
     QString nameOpenTag;
     QString nameOpenNote;
-    qint8 idOpenNotebook;
-    qint8 idOpenTag;
-    qint8 idOpenNote;
+    qint32 idOpenNotebook;
+    qint32 idOpenTag;
+    qint32 idOpenNote;
 
 private slots:
     void on_button_add_notebook_clicked();
     void on_button_add_tag_clicked();
-    void on_button_add_note_clicked();
-    void on_editor_textChanged();
+    void on_button_add_note_clicked();  
+    void on_editor_cursorPositionChanged();
     void on_add_tag_to_note_clicked();
 
 protected:
