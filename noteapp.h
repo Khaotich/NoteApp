@@ -114,7 +114,9 @@ protected:
     void load_notes_from_tag(QString name_tag);
     void load_tags_of_note(QString name_note);
 
-    void RemoveLayout (QWidget* widget);
+    void remove_tag_from_note(QString name_tag);
+    void remove_tag(QString name_tag);
+    void remove_notepad(QString name_notepad);
 };
 
 #endif // NOTEAPP_H

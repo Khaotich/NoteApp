@@ -619,8 +619,8 @@ void NoteApp::on_button_link_clicked()
         if(adress.left(7) == "http://") adress.remove(0, 7);
 
         QString content = "["+ text_ + "]"
-                        + "(http://" + adress
-                        + " \"" + title + "\")";
+                + "(http://" + adress
+                + " \"" + title + "\")";
 
         QString text = ui->editor->toPlainText();
         text += content;
@@ -720,10 +720,11 @@ void NoteApp::open_note(QString name_note)
 {
     if(database.isOpen())
     {
-        QSqlQuery query_id("SELECT Id FROM Notes WHERE NoteName='" + name_note + "'");
-        query_id.exec();
-        query_id.next();
-        idOpenNote = query_id.value(0).toInt();
+        QSqlQuery query("SELECT Id, Date FROM Notes WHERE NoteName='" + name_note + "'");
+        query.exec();
+        query.next();
+        idOpenNote = query.value(0).toInt();
+        QString date = query.value(1).toString();
 
         nameOpenNote = name_note;
         openNote = true;
@@ -739,6 +740,9 @@ void NoteApp::open_note(QString name_note)
         tc.setPosition(ui->editor->document()->characterCount() - 1);
         ui->editor->setTextCursor(tc);
         ui->editor->setFocus();
+
+        ui->title->setText(name_note);
+        ui->date->setText(date);
     }
     else return;
 }
@@ -765,7 +769,50 @@ void NoteApp::create_note(QString name_note)
 //usunięcie notatki
 void NoteApp::remove_note(QString name_note)
 {
-    return;
+    if(name_note == nameOpenNote)
+    {
+        nameOpenNote.clear();
+        openNote = false;
+        ui->title->clear();
+        ui->date->clear();
+        ui->editor->clear();
+
+        if(ui->tags_from_note->layout() != NULL)
+        {
+            QLayoutItem* item;
+            while((item = ui->tags_from_note->layout()->takeAt(0)) != NULL)
+            {
+                QWidget* widget = item->widget();
+                delete widget;
+                delete item;
+            }
+            delete ui->tags_from_note->layout();
+        }
+    }
+
+    if(database.isOpen())
+    {
+        QSqlQuery queryIdNote("SELECT Id FROM Notes WHERE NoteName='" + name_note + "'");
+        queryIdNote.exec();
+        queryIdNote.next();
+        QString idNote = queryIdNote.value(0).toString();
+
+        QSqlQuery queryRemove1("DELETE FROM TagsNotes WHERE IdNote='" + idNote + "'");
+        QSqlQuery queryRemove2("DELETE FROM Notes WHERE Id='" + idNote + "'");
+        QSqlQuery queryRemove3("DELETE FROM NotebooksNotes WHERE IdNote='" + idNote + "'");
+
+        queryRemove1.exec();
+        queryRemove2.exec();
+        queryRemove3.exec();
+    }
+
+    if(QFile::exists("notes/" + name_note + ".md"))
+    {
+        QFile::remove("notes/" + name_note + ".md");
+    }
+
+    if(openTag) load_notes_from_tag(nameOpenTag);
+    else if(openNotebook) load_notes_from_nootebook(nameOpenNotebook);
 }
 
 //zapisuje plik przy każdej zmianie tekstu
@@ -773,6 +820,79 @@ void NoteApp::on_editor_cursorPositionChanged()
 {
     if(openNote && ui->editor->hasFocus()) save_note(nameOpenNote);
 }
+
+//usuwanie tagów z notatki
+void NoteApp::remove_tag_from_note(QString name_tag)
+{
+    if(database.isOpen())
+    {
+        QSqlQuery queryIdTag("SELECT Id FROM Tags WHERE TagName='" + name_tag + "'");
+        queryIdTag.exec();
+        queryIdTag.next();
+        QString idTag = queryIdTag.value(0).toString();
+
+        QSqlQuery queryRemove("DELETE FROM TagsNotes WHERE IdNote='" + QString::number(idOpenNote) + "' AND IdTag='" + idTag + "'");
+        if(queryRemove.exec()) load_tags_of_note(nameOpenNote);
+    }
+}
+
+//usuwanie tagów z systemu
+void NoteApp::remove_tag(QString name_tag)
+{
+    QSqlQuery queryIdTag("SELECT Id FROM Tags WHERE TagName='" + name_tag + "'");
+    queryIdTag.exec();
+    queryIdTag.next();
+    QString idTag = queryIdTag.value(0).toString();
+
+    QSqlQuery queryRemove("DELETE FROM TagsNotes WHERE IdTag='" + idTag + "'");
+    QSqlQuery queryRemove_("DELETE FROM Tags WHERE Id='" + idTag + "'");
+
+    if(queryRemove.exec() && queryRemove_.exec())
+    {
+        load_tags();
+        load_tags_of_note(nameOpenNote);
+    }
+}
+
+//usuwanie notatników z systemu
+void NoteApp::remove_notepad(QString name_notepad)
+{
+    QMessageBox mes;
+    auto result = QMessageBox::warning(this, "Remove notepad", "Are you sure to delete the\nnotepad with all its notes?", QMessageBox::Yes|QMessageBox::No);
+
+    if(result == QMessageBox::Yes)
+    {
+        if(database.isOpen())
+        {
+            if(name_notepad == nameOpenNotebook)
+            {
+                openNotebook = false;
+                nameOpenNotebook = "";
+                idOpenNotebook = 0;
+
+                QVBoxLayout *layout = new QVBoxLayout;
+                QWidget *widget = new QWidget;
+                layout->setAlignment(Qt::AlignTop);
+                widget->setLayout(layout);
+                ui->scroll_area_notes->setWidget(widget);
+            }
+
+            QSqlQuery query("SELECT Notes.NoteName FROM Notes, NotebooksNotes, Notebooks WHERE NotebooksNotes.IdNotebook=Notebooks.Id AND NotebooksNotes.IdNote=Notes.Id AND Notebooks.NotebookName='" + name_notepad + "'");
+            int idName = query.record().indexOf("NoteName");
+            while(query.next())
+            {
+                QString name_ = query.value(idName).toString();
+                remove_note(name_);
+            }
+
+            QSqlQuery queryRemove("DELETE FROM Notebooks WHERE NotebookName='" + name_notepad + "'");
+            queryRemove.exec();
+            load_notebooks();
+        }
+    }
+    else return;
+}
+
 
 //-------------------------------------------------------------------------------------------//
 //--------------------------------Obsługa bazy danych----------------------------------------//
@@ -815,12 +935,24 @@ void NoteApp::load_notebooks()
 
         while(query.next())
         {
-           QString name = query.value(idName).toString();
+            QString name = query.value(idName).toString();
 
-           QPushButton *button = new QPushButton();
-           button->setText(name);
-           layout->addWidget(button);
-           connect(button, &QPushButton::clicked, button, [=]{load_notes_from_nootebook(name);});
+            QPushButton *button = new QPushButton();
+            button->setText(name);
+            layout->addWidget(button);
+            connect(button, &QPushButton::clicked, button, [=]{load_notes_from_nootebook(name);});
+
+            button->setContextMenuPolicy(Qt::CustomContextMenu);
+            connect(button, &QPushButton::customContextMenuRequested, button, [=]{
+                QMenu* menu = new QMenu();
+                QAction* action = new QAction("Remove");
+                menu->addAction(action);
+                QPoint global_pos = button->mapToGlobal(QPoint(0,0));
+                connect(action, &QAction::triggered, action, [=]{
+                    remove_notepad(name);
+                 });
+                menu->exec(global_pos+button->rect().center());
+            });
         }
     }
     else return;
@@ -844,6 +976,21 @@ void NoteApp::load_notes_from_nootebook(QString name)
     nameOpenTag = "";
     idOpenTag = 0;
 
+    ui->title->clear();
+    ui->date->clear();
+
+    QWidget * tmp = ui->tags_from_note;
+    if(tmp->layout() != 0)
+    {
+        QLayoutItem* item;
+        while((item = tmp->layout()->takeAt(0)) != 0)
+        {
+            delete item->widget();
+            delete item;
+        }
+        delete tmp->layout();
+    }
+
     if(database.isOpen())
     {
         QSqlQuery query_id("SELECT Id FROM Notebooks WHERE NotebookName='" + name + "'");
@@ -862,12 +1009,24 @@ void NoteApp::load_notes_from_nootebook(QString name)
 
         while(query.next())
         {
-           QString name_ = query.value(idName).toString();
+            QString name_ = query.value(idName).toString();
 
-           QPushButton *button = new QPushButton();
-           button->setText(name_);
-           layout->addWidget(button);
-           connect(button, &QPushButton::clicked, button, [=]{open_note(name_);});
+            QPushButton *button = new QPushButton();
+            button->setText(name_);
+            layout->addWidget(button);
+            button->setContextMenuPolicy(Qt::CustomContextMenu);
+
+            connect(button, &QPushButton::clicked, button, [=]{open_note(name_);});
+            connect(button, &QPushButton::customContextMenuRequested, button, [=]{
+                QMenu* menu = new QMenu();
+                QAction* action = new QAction("Remove");
+                menu->addAction(action);
+                QPoint global_pos = button->mapToGlobal(QPoint(0,0));
+                connect(action, &QAction::triggered, action, [=]{
+                    remove_note(name_);
+                 });
+                menu->exec(global_pos+button->rect().center());
+            });
         }
     }
     else return;
@@ -889,12 +1048,24 @@ void NoteApp::load_tags()
 
         while(query.next())
         {
-           QString name = query.value(idName).toString();
+            QString name = query.value(idName).toString();
 
-           QPushButton *button = new QPushButton();
-           button->setText(name);
-           layout->addWidget(button);
-           connect(button, &QPushButton::clicked, button, [=]{load_notes_from_tag(name);});
+            QPushButton *button = new QPushButton();
+            button->setText(name);
+            layout->addWidget(button);
+            connect(button, &QPushButton::clicked, button, [=]{load_notes_from_tag(name);});
+
+            button->setContextMenuPolicy(Qt::CustomContextMenu);
+            connect(button, &QPushButton::customContextMenuRequested, button, [=]{
+                QMenu* menu = new QMenu();
+                QAction* action = new QAction("Remove");
+                menu->addAction(action);
+                QPoint global_pos = button->mapToGlobal(QPoint(0,0));
+                connect(action, &QAction::triggered, action, [=]{
+                    remove_tag(name);
+                 });
+                menu->exec(global_pos+button->rect().center());
+            });
         }
     }
     else return;
@@ -918,6 +1089,21 @@ void NoteApp::load_notes_from_tag(QString name_tag)
     nameOpenTag = name_tag;
     idOpenNotebook = 0;
 
+    ui->title->clear();
+    ui->date->clear();
+
+    QWidget * tmp = ui->tags_from_note;
+    if(tmp->layout() != 0)
+    {
+        QLayoutItem* item;
+        while((item = tmp->layout()->takeAt(0)) != 0)
+        {
+            delete item->widget();
+            delete item;
+        }
+        delete tmp->layout();
+    }
+
     if(database.isOpen())
     {
         QSqlQuery query_id("SELECT Id FROM Tags WHERE TagName='" + name_tag + "'");
@@ -936,12 +1122,24 @@ void NoteApp::load_notes_from_tag(QString name_tag)
 
         while(query.next())
         {
-           QString name_ = query.value(idName).toString();
+            QString name_ = query.value(idName).toString();
 
-           QPushButton *button = new QPushButton();
-           button->setText(name_);
-           layout->addWidget(button);
-           connect(button, &QPushButton::clicked, button,[=]{open_note(name_);});
+            QPushButton *button = new QPushButton();
+            button->setText(name_);
+            layout->addWidget(button);
+            connect(button, &QPushButton::clicked, button,[=]{open_note(name_);});
+
+            button->setContextMenuPolicy(Qt::CustomContextMenu);
+            connect(button, &QPushButton::customContextMenuRequested, button, [=]{
+                QMenu* menu = new QMenu();
+                QAction* action = new QAction("Remove");
+                menu->addAction(action);
+                QPoint global_pos = button->mapToGlobal(QPoint(0,0));
+                connect(action, &QAction::triggered, action, [=]{
+                    remove_note(name_);
+                 });
+                menu->exec(global_pos+button->rect().center());
+            });
         }
     }
     else return;
@@ -986,22 +1184,24 @@ void NoteApp::on_button_add_note_clicked()
             QDateTime time_ = QDateTime::currentDateTime();
             QString time = time_.toString("dd.MM.yyyy hh:mm");
 
+            QSqlQuery query_insert_note, query_insert_notebooksnotes;
+
+            query_insert_note.prepare("INSERT INTO Notes (NoteName, Date) VALUES (:name, :time)");
+            query_insert_note.bindValue(":name", name);
+            query_insert_note.bindValue(":time", time);
+
+            query_insert_note.exec();
+
             QSqlQuery query_get_id_note("SELECT Id FROM Notes");
             query_get_id_note.exec();
             query_get_id_note.last();
-            qint8 idNote = query_get_id_note.value(0).toInt() + 1;
-
-            QSqlQuery query_insert_note, query_insert_notebooksnotes;
-
-            query_insert_note.prepare("INSERT INTO Notes (NoteName, TimeEdit) VALUES (:name, :time)");
-            query_insert_note.bindValue(":name", name);
-            query_insert_note.bindValue(":time", time);
+            qint32 idNote = query_get_id_note.value(0).toInt();
 
             query_insert_notebooksnotes.prepare("INSERT INTO NotebooksNotes (IdNotebook, IdNote) VALUES (:idNotebook, :idNote)");
             query_insert_notebooksnotes.bindValue(":idNotebook", idOpenNotebook);
             query_insert_notebooksnotes.bindValue(":idNote", idNote);
 
-            if(query_insert_note.exec() && query_insert_notebooksnotes.exec()) create_note(name);
+            if(query_insert_notebooksnotes.exec()) create_note(name);
             load_notes_from_nootebook(nameOpenNotebook);
         }
         else return;
@@ -1018,20 +1218,19 @@ void NoteApp::load_tags_of_note(QString name_note)
 {
     if(database.isOpen())
     {
-
         QSqlQuery query("SELECT Tags.TagName FROM Tags, TagsNotes, Notes WHERE Notes.Id=TagsNotes.IdNote AND Tags.Id=TagsNotes.IdTag AND Notes.NoteName='" + name_note + "'");
         int idName = query.record().indexOf("TagName");
 
-        QWidget * tmp = ui->tags_from_note;
-        if(tmp->layout() != NULL)
+        if(ui->tags_from_note->layout() != NULL)
         {
             QLayoutItem* item;
-            while((item = tmp->layout()->takeAt(0)) != NULL)
+            while((item = ui->tags_from_note->layout()->takeAt(0)) != NULL)
             {
-                delete item->widget();
+                QWidget* widget = item->widget();
+                delete widget;
                 delete item;
             }
-            delete tmp->layout();
+            delete ui->tags_from_note->layout();
         }
 
         QHBoxLayout *layout = new QHBoxLayout;
@@ -1041,15 +1240,18 @@ void NoteApp::load_tags_of_note(QString name_note)
 
         while(query.next())
         {
-           QString name_ = query.value(idName).toString();
+            QString name_ = query.value(idName).toString();
 
-           QPushButton *button = new QPushButton();
-           button->setText(name_);
-           layout->addWidget(button);
+            QPushButton *button = new QPushButton();
+            button->setText(name_);
 
-           //podłączam funkcję do przycisku notatnika
-//           connect(button, &QPushButton::clicked, button,
-//                   [=]{open_note(name_);});
+            QMenu* menu = new QMenu();
+            QAction* action = new QAction("Remove");
+            menu->addAction(action);
+            button->setMenu(menu);
+            layout->addWidget(button);
+
+            connect(action, &QAction::triggered, action, [=]{remove_tag_from_note(name_);});
         }
     }
     else return;
@@ -1058,38 +1260,61 @@ void NoteApp::load_tags_of_note(QString name_note)
 //dodanie tagu do notatki
 void NoteApp::on_add_tag_to_note_clicked()
 {
-    if(database.isOpen() && openNote)
+    if(openNote)
     {
-        bool ok;
-        QStringList items;
+        if(database.isOpen())
+        {
+            bool ok;
+            QStringList items;
 
-        QSqlQuery query("SELECT TagName FROM Tags WHERE Id NOT IN (SELECT IdTag FROM TagsNotes WHERE IdNote='" + QString::number(idOpenNote) + "')");
-        int idName = query.record().indexOf("TagName");
-        while(query.next()) items << query.value(idName).toString();
+            QSqlQuery query("SELECT TagName FROM Tags WHERE Id NOT IN (SELECT IdTag FROM TagsNotes WHERE IdNote='" + QString::number(idOpenNote) + "')");
+            int idName = query.record().indexOf("TagName");
+            int count = 0;
+            QString name;
+            while(query.next())
+            {
+                items << query.value(idName).toString();
+                count++;
+            }
 
-        QString name = QInputDialog::getItem(0, "Add tag to note",
+            if(count != 0)
+            {
+                name = QInputDialog::getItem(0, "Add tag to note",
                                              "Tag Name:",
                                              items,0, 0,
                                              &ok,
                                              Qt::CustomizeWindowHint
                                              | Qt::WindowTitleHint);
+            }
+            else
+            {
+                QMessageBox messageBox;
+                messageBox.warning(0,"Warning","Open note have all tags or\nthere are no tags in the system!");
+                return;
+            }
 
-        if(ok && !name.isEmpty())
-        {
-            QSqlQuery query_("SELECT Id FROM Tags WHERE TagName='" + name + "'");
-            query_.exec();
-            query_.last();
-            QString idTag = query_.value(0).toString();
 
-            QString idNote = QString::number(idOpenNote);
-            QSqlQuery query_insert;
-            query_insert.prepare("INSERT INTO TagsNotes (IdTag, IdNote) VALUES (:idTag, :idNote)");
-            query_insert.bindValue(":idTag", idTag);
-            query_insert.bindValue(":idNote", idNote);
+            if(ok && !name.isEmpty())
+            {
+                QSqlQuery query_("SELECT Id FROM Tags WHERE TagName='" + name + "'");
+                query_.exec();
+                query_.last();
+                QString idTag = query_.value(0).toString();
 
-            if(query_insert.exec()) load_tags_of_note(nameOpenNote);
+                QString idNote = QString::number(idOpenNote);
+                QSqlQuery query_insert;
+                query_insert.prepare("INSERT INTO TagsNotes (IdTag, IdNote) VALUES (:idTag, :idNote)");
+                query_insert.bindValue(":idTag", idTag);
+                query_insert.bindValue(":idNote", idNote);
+
+                if(query_insert.exec()) load_tags_of_note(nameOpenNote);
+            }
         }
-        else return;
     }
-    else return;
+    else
+    {
+        QMessageBox messageBox;
+        messageBox.warning(0,"Warning","Open note to add tag!");
+        return;
+    }
 }

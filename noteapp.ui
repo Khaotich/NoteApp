@@ -372,26 +372,31 @@
            <widget class="QWidget" name="informations" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
              <property name="spacing">
-              <number>10</number>
+              <number>0</number>
              </property>
              <property name="leftMargin">
               <number>0</number>
              </property>
              <property name="topMargin">
-              <number>5</number>
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
              </property>
              <property name="bottomMargin">
-              <number>5</number>
+              <number>0</number>
              </property>
              <item>
               <widget class="QLabel" name="title">
                <property name="font">
                 <font>
-                 <pointsize>11</pointsize>
+                 <family>Arial Black</family>
+                 <pointsize>15</pointsize>
+                 <bold>true</bold>
                 </font>
                </property>
                <property name="text">
-                <string>Tytuł notatki:</string>
+                <string/>
                </property>
               </widget>
              </item>
@@ -399,11 +404,11 @@
               <widget class="QLabel" name="date">
                <property name="font">
                 <font>
-                 <pointsize>11</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>Data edycji:</string>
+                <string/>
                </property>
               </widget>
              </item>
