@@ -23,8 +23,6 @@ public:
     void openFile(const QString &path);
 
 private slots:
-    void onFileNew();
-    void onFileOpen();
     void onFileSave();
     void onFileSaveAs();
     void onExit();

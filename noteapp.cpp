@@ -51,13 +51,8 @@ NoteApp::NoteApp(QWidget *parent): QMainWindow(parent), ui(new Ui::NoteApp)
     ui->preview->setUrl(QUrl("qrc:/index.html"));
 
     //podłączam akcje do slotów dla plików markdown
-    connect(ui->actionNew, &QAction::triggered, this, &NoteApp::onFileNew);
-    connect(ui->actionOpen, &QAction::triggered, this, &NoteApp::onFileOpen);
-    connect(ui->actionSave, &QAction::triggered, this, &NoteApp::onFileSave);
     connect(ui->actionSaveAs, &QAction::triggered, this, &NoteApp::onFileSaveAs);
     connect(ui->actionExit, &QAction::triggered, this, &NoteApp::onExit);
-    connect(ui->editor->document(), &QTextDocument::modificationChanged,
-            ui->actionSave, &QAction::setEnabled);
     connect(ui->editor, &QPlainTextEdit::textChanged, [this]() { m_content.setText(ui->editor->toPlainText()); });
 
     //wczytanie ciemnego motywu aplikacji
@@ -111,55 +106,6 @@ NoteApp::~NoteApp()
 //---------------------------------Obsługa plików--------------------------------------------//
 
 
-//otwarcie pliku
-void NoteApp::openFile(const QString &path)
-{
-    QFile f(path);
-    if(!f.open(QIODevice::ReadOnly))
-    {
-        QMessageBox::warning(this, windowTitle(),tr("Could not open file %1: %2").arg(QDir::toNativeSeparators(path), f.errorString()));
-        return;
-    }
-
-    m_filePath = path;
-    ui->editor->setPlainText(f.readAll());
-}
-
-//sprawdzenie czy plik się zmienił
-bool NoteApp::isModified() const
-{
-    return ui->editor->document()->isModified();
-}
-
-//nowy plik
-void NoteApp::onFileNew()
-{
-    if(isModified())
-    {
-        QMessageBox::StandardButton button = QMessageBox::question(this, windowTitle(), tr("You have unsaved changes. Do you want to create a new document anyway?"));
-        if(button != QMessageBox::Yes) return;
-    }
-
-    m_filePath.clear();
-    ui->editor->setPlainText(tr("## New document"));
-    ui->editor->document()->setModified(false);
-}
-
-//otwarcie pliku
-void NoteApp::onFileOpen()
-{
-    if(isModified())
-    {
-        QMessageBox::StandardButton button = QMessageBox::question(this, windowTitle(), tr("You have unsaved changes. Do you want to open a new document anyway?"));
-        if(button != QMessageBox::Yes) return;
-    }
-
-    QString path = QFileDialog::getOpenFileName(this, tr("Open MarkDown File"), "", tr("MarkDown File (*.md)"));
-    if(path.isEmpty()) return;
-
-    openFile(path);
-}
-
 //zapisanie pliku
 void NoteApp::onFileSave()
 {
@@ -190,14 +136,9 @@ void NoteApp::onFileSaveAs()
     onFileSave();
 }
 
-//wyjście bez zapisywania zmian
+//wyjście
 void NoteApp::onExit()
 {
-    if(isModified())
-    {
-        QMessageBox::StandardButton button = QMessageBox::question(this, windowTitle(), tr("You have unsaved changes. Do you want to exit anyway?"));
-        if(button != QMessageBox::Yes) return;
-    }
     close();
 }
 
