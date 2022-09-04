@@ -1,1 +1,2 @@
 # NoteApp
+![](imgs/app.png) 
